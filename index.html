@@ -1,185 +1,48 @@
-<!-- v.1.7.6 --><!DOCTYPE html><html lang="ko">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>시그 이미지 숫자 변경기</title>
-  <style>
-    body {
-      font-family: sans-serif;
-      text-align: center;
-      margin: 0;
-      padding: 0;
-    }h1 {
-  margin-top: 20px;
-}
-
-hr {
-  margin: 30px 0;
-  border: none;
-  border-top: 1px solid #ccc;
-}
-
-.section {
-  text-align: left;
-  margin: 0 auto;
-  width: 90%;
-  max-width: 900px;
-}
-
-.upload-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 10px;
-}
-
-.drop-box {
-  border: 2px dashed #aaa;
-  padding: 20px;
-  text-align: center;
-  flex: 1;
-}
-
-.upload-info {
-  font-size: 12px;
-  color: #999;
-  margin-left: 10px;
-}
-
-.preview-section {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-top: 20px;
-}
-
-.preview-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.preview-row img {
-  width: 60px;
-  height: 60px;
-  object-fit: cover;
-  border-radius: 6px;
-}
-
-.preview-row input {
-  width: 60px;
-  padding: 5px;
-}
-
-.preview-row .remove {
-  margin-left: auto;
-  cursor: pointer;
-  color: red;
-  font-weight: bold;
-}
-
-.convert-btn {
-  margin-top: 40px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 30px;
-  padding: 20px 40px;
-  font-size: 20px;
-  cursor: pointer;
-}
-
-.version {
-  font-size: 12px;
-  color: #aaa;
-  margin-top: 40px;
-}
-
-  </style>
-</head>
-<body>
-  <h1>시그 이미지 숫자 변경기</h1>
-  <div class="section">
-    <hr />
-    <h2>PC용 이미지 업로드</h2>
-    <div class="upload-row">
-      <label>이미지 선택:</label>
-      <input type="file" id="imageInput" accept="image/*" multiple />
-      <span class="upload-info">(최대 10개)</span>
-      <div class="drop-box" id="dropBox">여기로 드래그 앤 드롭</div>
+<!-- v.1.7.7 --><div class="main-title text-center text-2xl font-bold mt-4 mb-2">시그 이미지 숫자 변경기</div>
+<hr class="my-2" /><!-- PC용 이미지 업로드 영역 --><div class="upload-section-pc text-left">
+  <div class="flex items-center gap-4">
+    <span>업로드할 이미지 :</span>
+    <input type="file" id="imageUploadPc" multiple class="hidden" accept="image/*">
+    <label for="imageUploadPc" class="cursor-pointer px-4 py-2 bg-blue-500 text-white rounded">이미지 선택</label>
+    <div id="dropAreaPc" class="border border-dashed border-gray-400 p-4 text-gray-500 cursor-pointer">
+      수정할 이미지를 여기에 드래그 앤 드롭
     </div>
-    <div style="font-size: 12px; color: #999;">이미지는 여러 개 업로드할 수 있으며, 10개를 초과할 수 없습니다.</div><div id="previewContainer" class="preview-section"></div>
-
-<hr />
-<h2>모바일용 이미지 업로드</h2>
-<div class="upload-row">
-  <label>이미지 선택:</label>
-  <input type="file" id="imageInputMobile" accept="image/*" multiple />
-  <span class="upload-info">(최대 10개)</span>
-  <div class="drop-box" id="dropBoxMobile">여기로 드래그 앤 드롭</div>
-</div>
-<div style="font-size: 12px; color: #999;">이미지는 여러 개 업로드할 수 있으며, 10개를 초과할 수 없습니다.</div>
-
-<div id="previewContainerMobile" class="preview-section"></div>
-<hr />
-<div style="height: 2em;"></div>
-<button class="convert-btn">변환하기</button>
-<div style="height: 5em;"></div>
-<div class="version">v.1.7.6 | 250411</div>
-
-  </div>  <script>
-    const MAX_FILES = 10;
-
-    function handleFiles(files, previewContainer) {
-      previewContainer.innerHTML = "";
-      const fileArray = Array.from(files).slice(0, MAX_FILES);
-      fileArray.forEach((file, index) => {
-        const reader = new FileReader();
-        reader.onload = function (e) {
-          const row = document.createElement("div");
-          row.className = "preview-row";
-          row.innerHTML = `
-            <img src="${e.target.result}" alt="preview" />
-            <span>숫자:</span><input type="text" value="${index + 1}" />
-            <span>텍스트:</span><input type="text" value="" />
-            <span class="remove">X</span>
-          `;
-          row.querySelector(".remove").onclick = () => row.remove();
-          previewContainer.appendChild(row);
-        };
-        reader.readAsDataURL(file);
-      });
-    }
-
-    document.getElementById("imageInput").addEventListener("change", function () {
-      if (this.files.length > MAX_FILES) {
-        alert("1회 처리 가능한 파일은 최대 10개입니다.");
-      }
-      handleFiles(this.files, document.getElementById("previewContainer"));
-    });
-
-    document.getElementById("dropBox").addEventListener("dragover", function (e) {
-      e.preventDefault();
-    });
-    document.getElementById("dropBox").addEventListener("drop", function (e) {
-      e.preventDefault();
-      handleFiles(e.dataTransfer.files, document.getElementById("previewContainer"));
-    });
-
-    // 모바일용도 동일 처리
-    document.getElementById("imageInputMobile").addEventListener("change", function () {
-      if (this.files.length > MAX_FILES) {
-        alert("1회 처리 가능한 파일은 최대 10개입니다.");
-      }
-      handleFiles(this.files, document.getElementById("previewContainerMobile"));
-    });
-
-    document.getElementById("dropBoxMobile").addEventListener("dragover", function (e) {
-      e.preventDefault();
-    });
-    document.getElementById("dropBoxMobile").addEventListener("drop", function (e) {
-      e.preventDefault();
-      handleFiles(e.dataTransfer.files, document.getElementById("previewContainerMobile"));
-    });
-  </script></body>
-</html><!-- v.1.7.6 -->
+  </div>
+  <div class="text-sm text-gray-400 mt-1">이미지 업로드는 최대 10개까지 가능합니다.</div>
+</div><!-- PC용 미리보기 영역 --><div id="previewAreaPc" class="mt-4 space-y-2 text-left">
+  <!-- JS로 반복 생성되는 영역 예시 -->
+  <div class="flex items-center gap-2">
+    <img src="" alt="썸네일" class="w-16 h-16 object-cover" />
+    <span>기존 숫자</span>
+    <input type="text" value="" class="border px-2 py-1 w-16" />
+    <span>→</span>
+    <span>변경할 숫자</span>
+    <input type="text" value="" class="border px-2 py-1 w-16" />
+    <button class="ml-auto text-black">X</button>
+  </div>
+</div><hr class="my-4" /><!-- 모바일용 이미지 업로드 영역 (PC와 동일한 구성) --><div class="upload-section-mobile text-left">
+  <div class="flex items-center gap-4">
+    <span>업로드할 이미지 :</span>
+    <input type="file" id="imageUploadMobile" multiple class="hidden" accept="image/*">
+    <label for="imageUploadMobile" class="cursor-pointer px-4 py-2 bg-blue-500 text-white rounded">이미지 선택</label>
+    <div id="dropAreaMobile" class="border border-dashed border-gray-400 p-4 text-gray-500 cursor-pointer">
+      수정할 이미지를 여기에 드래그 앤 드롭
+    </div>
+  </div>
+  <div class="text-sm text-gray-400 mt-1">이미지 업로드는 최대 10개까지 가능합니다.</div>
+</div><!-- 모바일용 미리보기 영역 --><div id="previewAreaMobile" class="mt-4 space-y-2 text-left">
+  <!-- JS로 반복 생성되는 영역 예시 -->
+  <div class="flex items-center gap-2">
+    <img src="" alt="썸네일" class="w-16 h-16 object-cover" />
+    <span>기존 숫자</span>
+    <input type="text" value="" class="border px-2 py-1 w-16" />
+    <span>→</span>
+    <span>변경할 숫자</span>
+    <input type="text" value="" class="border px-2 py-1 w-16" />
+    <button class="ml-auto text-black">X</button>
+  </div>
+</div><hr class="my-8" /><!-- 변환 버튼 --><div class="text-center">
+  <button class="bg-blue-500 text-white py-3 px-10 rounded-full text-lg">변환하기</button>
+</div><div class="h-20"></div><!-- 하단 버전 정보 --><div class="text-center text-sm text-gray-400">
+  v.1.7.7 | 250411
+</div><!-- v.1.7.7 -->
