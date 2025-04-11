@@ -1,39 +1,143 @@
-<!-- v.1.7.9 -->
+<!-- v.1.7.8 -->
 <!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>시그 이미지 숫자 변경기</title>
-  <link rel="stylesheet" href="style.css"/>
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+    }
+
+    h1 {
+      margin-top: 20px;
+    }
+
+    hr {
+      margin: 30px 0;
+      border: none;
+      border-top: 1px solid #ccc;
+    }
+
+    .section {
+      text-align: left;
+      margin: 0 auto;
+      width: 90%;
+      max-width: 900px;
+    }
+
+    .upload-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .drop-box {
+      border: 2px dashed #aaa;
+      padding: 20px;
+      text-align: center;
+      flex: 1;
+      color: gray;
+      border-radius: 10px;
+    }
+
+    .upload-info {
+      font-size: 12px;
+      color: #999;
+      margin-left: 10px;
+    }
+
+    .preview-section {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .preview-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .preview-row img {
+      width: 80px;
+      height: 80px;
+      object-fit: cover;
+      border-radius: 6px;
+    }
+
+    .preview-row input {
+      width: 60px;
+      padding: 5px;
+    }
+
+    .preview-row .remove {
+      margin-left: auto;
+      cursor: pointer;
+      color: black;
+      font-weight: bold;
+    }
+
+    .convert-btn {
+      margin-top: 40px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 30px;
+      padding: 20px 40px;
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    .version {
+      font-size: 12px;
+      color: #aaa;
+      margin-top: 40px;
+    }
+  </style>
 </head>
 <body>
-  <main>
-    <h1>시그 이미지 숫자 변경기</h1>
+  <h1>시그 이미지 숫자 변경기</h1>
+  <div class="section">
+    <hr />
+    <h2><b>pc용 이미지 업로드</b></h2>
+    <div class="upload-row">
+      <label><b>이미지 업로드</b></label>
+      <input type="file" id="imageInput" accept="image/*" multiple />
+      <div class="drop-box" id="dropBox">업로드할 이미지를 여기로 드래그앤 드롭</div>
+    </div>
+    <div style="font-size: 12px; color: #999;">이미지는 최대 10개까지 업로드 가능합니다.</div>
+    <div id="previewContainer" class="preview-section"></div>
 
-    <section class="upload-section">
-      <div class="upload-container">
-        <h2>PC 업로드</h2>
-        <input type="file" id="imageInput" multiple accept="image/*">
-        <div id="dropBox" class="drop-box">이미지를 여기에 드래그 앤 드롭하거나 클릭해서 업로드하세요.</div>
-        <div id="previewContainer" class="preview-container"></div>
-      </div>
+    <hr />
+    <h2><b>mobile용 이미지 업로드</b></h2>
+    <div class="upload-row">
+      <label><b>이미지 업로드</b></label>
+      <input type="file" id="imageInputMobile" accept="image/*" multiple />
+      <div class="drop-box" id="dropBoxMobile">업로드할 이미지를 여기로 드래그앤 드롭</div>
+    </div>
+    <div style="font-size: 12px; color: #999;">이미지는 최대 10개까지 업로드 가능합니다.</div>
+    <div id="previewContainerMobile" class="preview-section"></div>
 
-      <div class="upload-container mobile">
-        <h2>모바일 업로드</h2>
-        <input type="file" id="imageInputMobile" multiple accept="image/*">
-        <div id="dropBoxMobile" class="drop-box">이미지를 터치해서 업로드하세요.</div>
-        <div id="previewContainerMobile" class="preview-container"></div>
-        <p class="mobile-guide">※ 모바일은 다중 선택이 안될 수 있습니다. 하나씩 업로드해 주세요.</p>
-      </div>
-    </section>
+    <hr />
+    <div style="height: 2em;"></div>
+    <div style="text-align: center;">
+      <button class="convert-btn">변환하기</button>
+      <div class="version">v.1.7.8 | 250411</div>
+    </div>
+    <div style="height: 5em;"></div>
+  </div>
 
-    <button class="convert-btn">변환하기</button>
-  </main>
-
-  <div class="version">v.1.7.9 | 250411</div>
-
+  <!-- Tesseract.js 로딩 -->
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.0.0/dist/tesseract.min.js"></script>
+  <!-- 메인 기능 스크립트 -->
   <script src="main.js"></script>
 </body>
 </html>
-<!-- v.1.7.9 -->
+<!-- v.1.7.8 -->
