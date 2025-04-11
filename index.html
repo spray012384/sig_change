@@ -1,7 +1,9 @@
-<!-- v.1.7.7 --><!DOCTYPE html><html lang="ko">
+<!-- v.1.7.8 -->
+<!DOCTYPE html>
+<html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>시그 이미지 숫자 변환</title>
   <style>
     body {
@@ -11,21 +13,25 @@
       align-items: center;
       padding: 20px;
     }
+
     h1 {
       text-align: center;
       margin-bottom: 30px;
     }
+
     .section {
       width: 100%;
       max-width: 800px;
       margin-bottom: 40px;
     }
+
     .upload-header {
       display: flex;
       align-items: center;
       gap: 10px;
       margin-bottom: 8px;
     }
+
     .drop-zone {
       flex: 1;
       height: 50px;
@@ -37,11 +43,13 @@
       font-size: 14px;
       color: #888;
     }
+
     .note {
       font-size: 12px;
       color: #aaa;
       margin-top: 4px;
     }
+
     .preview-area {
       display: flex;
       flex-direction: column;
@@ -49,53 +57,65 @@
       gap: 10px;
       margin-top: 10px;
     }
+
     .preview-item {
       display: flex;
       align-items: center;
       gap: 10px;
+      width: 100%;
     }
+
     .preview-img {
       width: 80px;
       height: 60px;
       object-fit: cover;
+      border: 1px solid #ccc;
+      border-radius: 4px;
     }
+
+    .text-label {
+      font-size: 14px;
+    }
+
     .input-number {
       width: 60px;
     }
+
     .arrow {
-      font-weight: bold;
-      font-size: 16px;
+      font-size: 18px;
     }
+
     .remove-btn {
       margin-left: auto;
       cursor: pointer;
-      color: black;
+      color: #333;
       font-weight: bold;
       font-size: 18px;
     }
+
     .convert-btn {
-      margin-top: 50px;
-      padding: 18px 48px;
+      margin-top: 60px;
+      padding: 16px 48px;
       font-size: 18px;
       border: none;
-      border-radius: 12px;
+      border-radius: 16px;
       background-color: #007bff;
       color: white;
       cursor: pointer;
     }
+
     hr {
       width: 100%;
       max-width: 800px;
       margin-top: 60px;
-      border: 0;
-      height: 1px;
-      background-color: #ccc;
     }
+
     .version {
       font-size: 12px;
       color: #999;
       margin-top: 40px;
     }
+
     .bold {
       font-weight: bold;
     }
@@ -103,63 +123,77 @@
 </head>
 <body>
   <h1>시그 이미지 숫자 변환</h1>
+
   <div class="section">
-    <h2 class="bold">PC용 이미지 업로드</h2>
+    <h2 class="bold">pc용 이미지 업로드</h2>
     <div class="upload-header">
-      <span class="bold">PC용 이미지</span>
-      <input type="file" multiple id="pc-upload" />
+      <span class="bold">pc용 이미지</span>
+      <input type="file" id="pc-upload" multiple />
       <div class="drop-zone">원하시는 이미지를 여기에 드래그하세요.</div>
     </div>
     <div class="note">※ 최대 10개의 이미지를 업로드할 수 있습니다.</div>
-    <div class="preview-area" id="pc-preview-area"></div>
+    <div class="preview-area" id="pc-preview">
+      <!-- PC 이미지 미리보기 항목 -->
+    </div>
   </div>
-  <hr />
+
   <div class="section">
-    <h2 class="bold">Mobile용 이미지 업로드</h2>
-    <hr />
+    <h2 class="bold">mobile용 이미지 업로드</h2>
     <div class="upload-header">
-      <span class="bold">Mobile용 이미지</span>
-      <input type="file" multiple id="mobile-upload" />
+      <span class="bold">mobile용 이미지</span>
+      <input type="file" id="mobile-upload" multiple />
       <div class="drop-zone">원하시는 이미지를 여기에 드래그하세요.</div>
     </div>
     <div class="note">※ 최대 10개의 이미지를 업로드할 수 있습니다.</div>
-    <div class="preview-area" id="mobile-preview-area"></div>
+    <div class="preview-area" id="mobile-preview">
+      <!-- Mobile 이미지 미리보기 항목 -->
+    </div>
   </div>
+
   <hr />
-  <div style="height: 32px;"></div>
+
+  <div style="height: 2em;"></div>
+
   <button class="convert-btn">변환하기</button>
-  <div class="version">v.1.7.7</div>  <script>
+
+  <div class="version">v.1.7.8</div>
+
+  <!-- Script -->
+  <script>
     function handleUpload(inputId, previewId) {
       const input = document.getElementById(inputId);
-      const previewArea = document.getElementById(previewId);
+      const preview = document.getElementById(previewId);
+      let uploadedFiles = [];
 
-      input.addEventListener("change", (e) => {
-        const files = Array.from(e.target.files);
-        previewArea.innerHTML = "";
-
-        files.forEach((file, index) => {
-          const reader = new FileReader();
-          reader.onload = () => {
-            const item = document.createElement("div");
-            item.className = "preview-item";
-            item.innerHTML = `
-              <img src="${reader.result}" class="preview-img" />
-              <span>기존 숫자</span>
-              <input type="number" class="input-number" value="" placeholder="예: 5" />
-              <span class="arrow">→</span>
-              <span>변경 숫자</span>
-              <input type="number" class="input-number" value="" placeholder="예: 10" />
-              <span class="remove-btn" onclick="this.parentNode.remove()">×</span>
-            `;
-            previewArea.appendChild(item);
-          };
-          reader.readAsDataURL(file);
+      input.addEventListener("change", () => {
+        const files = Array.from(input.files);
+        files.forEach(file => {
+          if (!uploadedFiles.find(f => f.name === file.name)) {
+            uploadedFiles.push(file);
+            const reader = new FileReader();
+            reader.onload = e => {
+              const div = document.createElement("div");
+              div.className = "preview-item";
+              div.innerHTML = `
+                <img src="${e.target.result}" class="preview-img" />
+                <span class="text-label">기존 숫자</span>
+                <input type="number" class="input-number" />
+                <span class="arrow">→</span>
+                <span class="text-label">변경 숫자</span>
+                <input type="number" class="input-number" />
+                <span class="remove-btn" onclick="this.parentElement.remove()">×</span>
+              `;
+              preview.appendChild(div);
+            };
+            reader.readAsDataURL(file);
+          }
         });
       });
     }
 
-    handleUpload("pc-upload", "pc-preview-area");
-    handleUpload("mobile-upload", "mobile-preview-area");
-  </script></body>
+    handleUpload("pc-upload", "pc-preview");
+    handleUpload("mobile-upload", "mobile-preview");
+  </script>
+</body>
 </html>
-<!-- v.1.7.7 -->
+<!-- v.1.7.8 -->
