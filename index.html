@@ -1,127 +1,130 @@
-<!-- v.1.2.0 -->
-<!DOCTYPE html>
-<html lang="ko">
+<!-- v.1.4.0 --><!DOCTYPE html><html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>시그 숫자 자동 변환</title>
   <style>
     body {
-      font-family: sans-serif;
-      max-width: 600px;
-      margin: 40px auto;
+      font-family: Arial, sans-serif;
+      max-width: 900px;
+      margin: 30px auto;
       padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
     }
-
-    h1 {
+    h2 {
       text-align: center;
     }
-
     .section {
       margin-bottom: 30px;
     }
-
-    .file-group {
-      margin-bottom: 15px;
-    }
-
-    label {
-      display: inline-block;
-      width: 100px;
-      font-weight: bold;
-    }
-
-    input[type="file"] {
-      margin-bottom: 5px;
-    }
-
-    .drag-box {
-      width: 100%;
-      height: 80px;
-      border: 2px dashed #ccc;
-      border-radius: 8px;
+    .upload-box {
       display: flex;
       align-items: center;
-      justify-content: center;
-      margin-top: 5px;
-      font-size: 14px;
-      color: #888;
+      gap: 10px;
+      margin-bottom: 10px;
     }
-
-    .small-text {
+    .drag-box {
+      border: 1px dashed #aaa;
+      padding: 10px;
+      text-align: center;
+      flex: 1;
+    }
+    .file-info {
       font-size: 12px;
-      color: #999;
-      margin-top: 5px;
+      color: #777;
+      margin-top: 4px;
     }
-
-    .number-inputs {
-      margin-bottom: 30px;
+    hr {
+      margin: 30px 0 15px;
     }
-
-    .number-inputs input {
-      width: 100px;
-      padding: 6px;
-      margin-right: 10px;
-    }
-
-    .divider {
-      border-top: 1px solid #ccc;
-      margin: 30px 0 20px;
-    }
-
-    button {
+    .convert-btn {
       display: block;
-      width: 100%;
-      height: 60px;
+      margin: 20px auto 10px;
+      padding: 20px;
       background-color: #007BFF;
       color: white;
-      font-size: 18px;
       border: none;
       border-radius: 8px;
+      font-size: 18px;
       cursor: pointer;
     }
-
-    button:hover {
-      background-color: #0056b3;
-    }
-
-    .version-text {
+    .version {
       text-align: center;
       font-size: 12px;
-      color: #aaa;
-      margin-top: 10px;
+      color: #888;
+    }
+    .preview-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .preview-img {
+      width: 80px;
+      height: auto;
+      border: 1px solid #ccc;
+    }
+    input[type="text"] {
+      padding: 6px;
+      width: 80px;
     }
   </style>
 </head>
 <body>
-  <h1>시그 숫자 자동 변환</h1>
-
-  <div class="section">
-    <div class="file-group">
-      <label>PC용 시그</label>
-      <input type="file" id="pcFiles" multiple />
-      <div class="drag-box">또는 여기에 PC용 파일을 드래그하세요</div>
+  <h2>시그 숫자 자동 변환</h2>  <div class="section">
+    <h3>PC용 시그 이미지 업로드</h3>
+    <div class="upload-box">
+      <label>파일 선택:</label>
+      <input type="file" id="pcFiles" multiple accept="image/*" />
+      <div class="drag-box">드래그 앤 드롭 또는 클릭</div>
     </div>
-    <div class="file-group">
-      <label>모바일용 시그</label>
-      <input type="file" id="mobileFiles" multiple />
-      <div class="drag-box">또는 여기에 모바일용 파일을 드래그하세요</div>
+    <div class="file-info">* 최대 업로드 파일 개수는 10개</div>
+    <div id="pcPreview"></div>
+  </div>  <div class="section">
+    <h3>Mobile용 시그 이미지 업로드</h3>
+    <div class="upload-box">
+      <label>파일 선택:</label>
+      <input type="file" id="mobileFiles" multiple accept="image/*" />
+      <div class="drag-box">드래그 앤 드롭 또는 클릭</div>
     </div>
-    <div class="small-text">최대 업로드 파일 개수는 10개입니다.</div>
-  </div>
+    <div class="file-info">* 최대 업로드 파일 개수는 10개</div>
+    <div id="mobilePreview"></div>
+  </div>  <hr />
+  <button class="convert-btn">변환하기</button>
+  <div class="version">v.1.4.0</div>  <script>
+    const pcFilesInput = document.getElementById('pcFiles');
+    const pcPreview = document.getElementById('pcPreview');
+    const mobileFilesInput = document.getElementById('mobileFiles');
+    const mobilePreview = document.getElementById('mobilePreview');
 
-  <div class="section number-inputs">
-    <label for="oldNumber">기존 숫자</label>
-    <input type="text" id="oldNumber" placeholder="예: 405" />
-    <label for="newNumber">변경 숫자</label>
-    <input type="text" id="newNumber" placeholder="예: 1250" />
-  </div>
+    pcFilesInput.addEventListener('change', () => handleFiles(pcFilesInput.files, pcPreview));
+    mobileFilesInput.addEventListener('change', () => handleFiles(mobileFilesInput.files, mobilePreview));
 
-  <div class="divider"></div>
+    function handleFiles(files, container) {
+      container.innerHTML = '';
+      const max = 10;
+      const limit = Math.min(files.length, max);
 
-  <button id="convertBtn">변환하기</button>
-  <div class="version-text">v.1.2.0</div>
+      for (let i = 0; i < limit; i++) {
+        const file = files[i];
+        const reader = new FileReader();
 
-</body>
-</html>
-<!-- v.1.2.0 -->
+        reader.onload = (e) => {
+          const row = document.createElement('div');
+          row.className = 'preview-row';
+
+          row.innerHTML = `
+            <img src="${e.target.result}" class="preview-img" alt="미리보기" />
+            <label>기존 숫자: <input type="text" name="original${i}" /></label>
+            <label>변경 숫자: <input type="text" name="new${i}" /></label>
+          `;
+
+          container.appendChild(row);
+        };
+
+        reader.readAsDataURL(file);
+      }
+    }
+  </script></body>
+</html><!-- v.1.4.0 -->
