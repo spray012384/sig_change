@@ -1,64 +1,99 @@
 // js.v.1.7.9
+document.addEventListener("DOMContentLoaded", () => {
+  const imageInput = document.getElementById("imageInput");
+  const imageInputMobile = document.getElementById("imageInputMobile");
+  const dropBox = document.getElementById("dropBox");
+  const dropBoxMobile = document.getElementById("dropBoxMobile");
+  const previewContainer = document.getElementById("previewContainer");
+  const previewContainerMobile = document.getElementById("previewContainerMobile");
 
-function handleImageUpload(input, containerId, isMobile = false) { const files = Array.from(input.files).reverse(); const previewContainer = document.getElementById(containerId);
+  const maxImages = 10;
 
-files.forEach((file, index) => { const reader = new FileReader(); reader.onload = function (event) { const imageUrl = event.target.result;
+  const createPreviewRow = (file, container) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const row = document.createElement("div");
+      row.className = "preview-row";
 
-const row = document.createElement("div");
-  row.className = "preview-row";
+      const img = document.createElement("img");
+      img.src = reader.result;
 
-  const img = document.createElement("img");
-  img.src = imageUrl;
+      const originalText = document.createElement("span");
+      originalText.textContent = "기존 숫자";
 
-  const originalLabel = document.createElement("span");
-  originalLabel.textContent = "기존 숫자";
+      const originalInput = document.createElement("input");
+      originalInput.type = "text";
+      originalInput.placeholder = "자동 인식";
 
-  const originalInput = document.createElement("input");
-  originalInput.placeholder = "추출중...";
+      const newText = document.createElement("span");
+      newText.textContent = "변경할 숫자";
 
-  const newLabel = document.createElement("span");
-  newLabel.textContent = "변경할 숫자";
+      const newInput = document.createElement("input");
+      newInput.type = "text";
+      newInput.placeholder = "변경할 숫자";
 
-  const newInput = document.createElement("input");
-  newInput.placeholder = "직접 입력";
+      const removeBtn = document.createElement("span");
+      removeBtn.className = "remove";
+      removeBtn.textContent = "X";
+      removeBtn.onclick = () => container.removeChild(row);
 
-  const removeBtn = document.createElement("span");
-  removeBtn.className = "remove";
-  removeBtn.textContent = "X";
-  removeBtn.onclick = () => row.remove();
+      row.appendChild(img);
+      row.appendChild(originalText);
+      row.appendChild(originalInput);
+      row.appendChild(newText);
+      row.appendChild(newInput);
+      row.appendChild(removeBtn);
 
-  row.appendChild(img);
-  row.appendChild(originalLabel);
-  row.appendChild(originalInput);
-  row.appendChild(newLabel);
-  row.appendChild(newInput);
-  row.appendChild(removeBtn);
+      container.prepend(row); // 최신 업로드가 위로
+    };
+    reader.readAsDataURL(file);
+  };
 
-  previewContainer.insertBefore(row, previewContainer.firstChild);
+  const handleFiles = (files, container) => {
+    const currentCount = container.children.length;
+    if (currentCount + files.length > maxImages) {
+      alert("최대 10개의 이미지만 업로드 가능합니다.");
+      return;
+    }
+    Array.from(files).forEach(file => createPreviewRow(file, container));
+  };
 
-  Tesseract.recognize(imageUrl, 'eng', { logger: m => console.log(m) })
-    .then(({ data: { text } }) => {
-      originalInput.value = text.trim();
-    })
-    .catch(() => {
-      originalInput.value = "인식불가";
-    });
-};
-reader.readAsDataURL(file);
+  imageInput.addEventListener("change", (e) => {
+    handleFiles(e.target.files, previewContainer);
+  });
 
-}); }
+  imageInputMobile.addEventListener("change", (e) => {
+    handleFiles(e.target.files, previewContainerMobile);
+  });
 
-document.getElementById("imageInput").addEventListener("change", (e) => { handleImageUpload(e.target, "previewContainer"); });
+  dropBox.addEventListener("dragover", (e) => {
+    e.preventDefault();
+    dropBox.style.borderColor = "#000";
+  });
 
-document.getElementById("dropBox").addEventListener("dragover", (e) => { e.preventDefault(); });
+  dropBox.addEventListener("dragleave", () => {
+    dropBox.style.borderColor = "#aaa";
+  });
 
-document.getElementById("dropBox").addEventListener("drop", (e) => { e.preventDefault(); handleImageUpload({ files: e.dataTransfer.files }, "previewContainer"); });
+  dropBox.addEventListener("drop", (e) => {
+    e.preventDefault();
+    dropBox.style.borderColor = "#aaa";
+    handleFiles(e.dataTransfer.files, previewContainer);
+  });
 
-document.getElementById("imageInputMobile").addEventListener("change", (e) => { handleImageUpload(e.target, "previewContainerMobile", true); });
+  dropBoxMobile.addEventListener("dragover", (e) => {
+    e.preventDefault();
+    dropBoxMobile.style.borderColor = "#000";
+  });
 
-document.getElementById("dropBoxMobile").addEventListener("dragover", (e) => { e.preventDefault(); });
+  dropBoxMobile.addEventListener("dragleave", () => {
+    dropBoxMobile.style.borderColor = "#aaa";
+  });
 
-document.getElementById("dropBoxMobile").addEventListener("drop", (e) => { e.preventDefault(); handleImageUpload({ files: e.dataTransfer.files }, "previewContainerMobile", true); });
-
+  dropBoxMobile.addEventListener("drop", (e) => {
+    e.preventDefault();
+    dropBoxMobile.style.borderColor = "#aaa";
+    handleFiles(e.dataTransfer.files, previewContainerMobile);
+  });
+});
 // js.v.1.7.9
-
