@@ -129,8 +129,8 @@
       row.className = "preview-row";
       row.innerHTML = `
         <img src="${e.target.result}" alt="preview" />
-        <span>숫자</span><input type="text" value="${index + 1}" />
-        <span>텍스트</span><input type="text" value="" />
+        <span>기존 숫자</span><input type="text" value="${index + 1}" />
+        <span>수정할 숫자</span><input type="text" value="" />
         <span class="remove"></span>
       `;
       row.querySelector(".remove").onclick = () => row.remove();
