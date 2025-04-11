@@ -1,168 +1,171 @@
-<!-- v.1.3.2 --><!DOCTYPE html><html lang="ko">
+<!-- v.1.3.2 -->
+<!DOCTYPE html>
+<html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>이미지 숫자 변환기</title>
+  <title>시그 이미지 숫자 변환</title>
   <style>
     body {
       font-family: sans-serif;
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 20px;
+      text-align: center;
+      margin: 40px;
     }
-    h2 {
-      margin-top: 40px;
-      font-size: 1.2rem;
+    h1 {
+      font-size: 24px;
+      margin-bottom: 30px;
     }
     .section {
       margin-bottom: 40px;
     }
-    .upload-row {
-      display: flex;
+    .upload-label {
+      display: inline-flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
+      margin-bottom: 8px;
     }
-    .dropzone {
-      border: 2px dashed #aaa;
+    .file-input {
+      display: none;
+    }
+    .upload-box {
+      border: 2px dashed #ccc;
       padding: 20px;
-      text-align: center;
       margin-top: 10px;
-      color: #666;
+      color: #999;
+      border-radius: 8px;
     }
     .preview-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
       margin-top: 20px;
+    }
+    .preview-item {
       display: flex;
       flex-direction: column;
-      gap: 20px;
+      align-items: center;
     }
-    .preview-row {
+    .preview-image {
+      max-width: 120px;
+      max-height: 120px;
+      margin-bottom: 6px;
+    }
+    .preview-controls {
       display: flex;
       align-items: center;
       gap: 10px;
     }
-    .preview-img {
-      width: 80px;
-      height: 80px;
-      object-fit: contain;
-    }
-    input[type="text"] {
-      width: 60px;
-      padding: 5px;
+    .input-box {
+      width: 50px;
+      text-align: center;
     }
     .remove-btn {
-      color: black;
+      background: none;
+      border: none;
+      font-size: 16px;
       cursor: pointer;
-      font-weight: bold;
+      color: black;
     }
     .convert-btn {
-      display: block;
-      margin: 40px auto 20px;
-      padding: 15px 40px;
-      background-color: #007bff;
+      margin-top: 50px;
+      padding: 14px 40px;
+      border-radius: 20px;
+      background-color: #007BFF;
       color: white;
+      font-size: 16px;
       border: none;
-      border-radius: 10px;
-      font-size: 1.1rem;
       cursor: pointer;
     }
-    .version {
-      text-align: center;
-      font-size: 0.8rem;
-      color: #888;
-      margin-top: 100px;
+    .version-text {
+      margin-top: 80px;
+      font-size: 12px;
+      color: #aaa;
     }
-    .label-text {
-      width: 70px;
-      text-align: right;
+    .file-info {
+      font-size: 12px;
+      color: #999;
+      margin-top: 4px;
     }
   </style>
 </head>
 <body>
-  <h1>이미지 숫자 변환기</h1>  <div class="section">
-    <h2>PC용 시그 업로드</h2>
-    <div class="upload-row">
-      <span class="label-text">PC용 시그</span>
-      <input type="file" id="pcUpload" multiple />
-    </div>
-    <div class="dropzone" id="pcDrop">여기에 드래그 앤 드롭</div>
-    <small>최대 업로드 파일 개수는 10개</small>
-    <div id="pcPreview" class="preview-container"></div>
-  </div>  <div class="section">
-    <h2>모바일용 시그 업로드</h2>
-    <div class="upload-row">
-      <span class="label-text">모바일용 시그</span>
-      <input type="file" id="mobileUpload" multiple />
-    </div>
-    <div class="dropzone" id="mobileDrop">여기에 드래그 앤 드롭</div>
-    <small>최대 업로드 파일 개수는 10개</small>
-    <div id="mobilePreview" class="preview-container"></div>
-  </div><button class="convert-btn">변환하기</button>
+  <h1>시그 이미지 숫자 변환</h1>
 
-  <div class="version">v.1.3.2</div>  <script>
-    function setupUpload(inputId, dropId, previewId) {
-      const input = document.getElementById(inputId);
-      const dropzone = document.getElementById(dropId);
+  <div class="section">
+    <div class="upload-label">
+      <label>PC용 시그 이미지 업로드</label>
+      <input type="file" id="pc-upload" class="file-input" multiple accept="image/*" />
+      <button onclick="document.getElementById('pc-upload').click()">파일 선택</button>
+    </div>
+    <div class="upload-box" onclick="document.getElementById('pc-upload').click()">또는 이미지를 여기에 드래그 앤 드롭</div>
+    <div class="file-info">최대 업로드 파일 개수는 10개</div>
+    <div id="pc-preview" class="preview-container"></div>
+  </div>
+
+  <div class="section">
+    <div class="upload-label">
+      <label>Mobile용 시그 이미지 업로드</label>
+      <input type="file" id="mobile-upload" class="file-input" multiple accept="image/*" />
+      <button onclick="document.getElementById('mobile-upload').click()">파일 선택</button>
+    </div>
+    <div class="upload-box" onclick="document.getElementById('mobile-upload').click()">또는 이미지를 여기에 드래그 앤 드롭</div>
+    <div class="file-info">최대 업로드 파일 개수는 10개</div>
+    <div id="mobile-preview" class="preview-container"></div>
+  </div>
+
+  <button class="convert-btn">변환하기</button>
+
+  <div class="version-text">v.1.3.2</div>
+
+  <script>
+    function handleFiles(inputId, previewId, files) {
       const preview = document.getElementById(previewId);
-
-      function createPreview(file) {
+      Array.from(files).forEach(file => {
         const reader = new FileReader();
-        reader.onload = function (e) {
-          const row = document.createElement("div");
-          row.className = "preview-row";
+        reader.onload = e => {
+          const container = document.createElement('div');
+          container.className = 'preview-item';
 
-          const img = document.createElement("img");
+          const img = document.createElement('img');
           img.src = e.target.result;
-          img.className = "preview-img";
+          img.className = 'preview-image';
 
-          const oldLabel = document.createElement("span");
-          oldLabel.textContent = "기존 숫자";
-          const oldInput = document.createElement("input");
-          oldInput.type = "text";
+          const controls = document.createElement('div');
+          controls.className = 'preview-controls';
 
-          const newLabel = document.createElement("span");
-          newLabel.textContent = "변경 숫자";
-          const newInput = document.createElement("input");
-          newInput.type = "text";
+          const original = document.createElement('input');
+          original.placeholder = '기존';
+          original.className = 'input-box';
 
-          const removeBtn = document.createElement("span");
-          removeBtn.textContent = "x";
-          removeBtn.className = "remove-btn";
-          removeBtn.onclick = () => row.remove();
+          const changed = document.createElement('input');
+          changed.placeholder = '변경';
+          changed.className = 'input-box';
 
-          row.appendChild(img);
-          row.appendChild(oldLabel);
-          row.appendChild(oldInput);
-          row.appendChild(newLabel);
-          row.appendChild(newInput);
-          row.appendChild(removeBtn);
+          const removeBtn = document.createElement('button');
+          removeBtn.innerHTML = '✕';
+          removeBtn.className = 'remove-btn';
+          removeBtn.onclick = () => preview.removeChild(container);
 
-          preview.appendChild(row);
+          controls.appendChild(original);
+          controls.appendChild(changed);
+          controls.appendChild(removeBtn);
+
+          container.appendChild(img);
+          container.appendChild(controls);
+          preview.appendChild(container);
         };
         reader.readAsDataURL(file);
-      }
-
-      input.addEventListener("change", (e) => {
-        [...e.target.files].forEach(createPreview);
-      });
-
-      dropzone.addEventListener("dragover", (e) => {
-        e.preventDefault();
-        dropzone.style.borderColor = "#007bff";
-      });
-
-      dropzone.addEventListener("dragleave", () => {
-        dropzone.style.borderColor = "#aaa";
-      });
-
-      dropzone.addEventListener("drop", (e) => {
-        e.preventDefault();
-        dropzone.style.borderColor = "#aaa";
-        [...e.dataTransfer.files].forEach(createPreview);
       });
     }
 
-    setupUpload("pcUpload", "pcDrop", "pcPreview");
-    setupUpload("mobileUpload", "mobileDrop", "mobilePreview");
-  </script></body>
+    document.getElementById('pc-upload').addEventListener('change', e => {
+      handleFiles('pc-upload', 'pc-preview', e.target.files);
+    });
+
+    document.getElementById('mobile-upload').addEventListener('change', e => {
+      handleFiles('mobile-upload', 'mobile-preview', e.target.files);
+    });
+  </script>
+</body>
 </html>
 <!-- v.1.3.2 -->
