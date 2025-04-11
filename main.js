@@ -1,64 +1,68 @@
-const imageInput = document.getElementById('imageInput');
-const previewContainer = document.getElementById('previewContainer');
+const MAX_FILES = 10;
+const uploadedFilesPC = [];
+const uploadedFilesMobile = [];
 
-// 이미지 파일 고유 hash 생성을 위한 Map
-const uploadedMap = new Map();
-
-imageInput.addEventListener('change', async (event) => {
-  const files = Array.from(event.target.files);
-  for (const file of files) {
-    const fileKey = await getFileHash(file);
-
-    // 이미 동일 파일이 업로드 되었는지 체크
-    if (!uploadedMap.has(fileKey)) {
-      uploadedMap.set(fileKey, file.name);
-
-      const url = URL.createObjectURL(file);
-      const ocrResult = await simulateOCR(file); // 실제 OCR 함수로 대체 가능
-
-      const wrapper = document.createElement('div');
-      wrapper.className = 'image-preview';
-
-      const img = document.createElement('img');
-      img.src = url;
-
-      const span = document.createElement('span');
-      span.className = 'ocr-result';
-      span.textContent = ocrResult || '인식불가';
-
-      const btn = document.createElement('button');
-      btn.className = 'remove-btn';
-      btn.textContent = '삭제';
-      btn.addEventListener('click', () => {
-        previewContainer.removeChild(wrapper);
-        uploadedMap.delete(fileKey);
-      });
-
-      wrapper.appendChild(img);
-      wrapper.appendChild(span);
-      wrapper.appendChild(btn);
-
-      previewContainer.prepend(wrapper);
+function handleFiles(files, previewContainer, fileStore) {
+  const newFiles = Array.from(files);
+  for (const file of newFiles) {
+    if (fileStore.length >= MAX_FILES) {
+      alert("최대 10개까지 업로드 가능합니다.");
+      return;
     }
-  }
+    fileStore.push(file);
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      const imgDataUrl = e.target.result;
+      const row = document.createElement("div");
+      row.className = "preview-row";
+      row.innerHTML = `
+        <img src="${imgDataUrl}" alt="preview" />
+        <span>기존 숫자</span><input type="text" value="인식 중..." readonly />
+        <span>수정할 숫자</span><input type="text" value="" />
+        <span class="remove">✕</span>
+      `;
+      const inputField = row.querySelector("input[type='text']");
+      row.querySelector(".remove").onclick = () => {
+        previewContainer.removeChild(row);
+        const index = fileStore.indexOf(file);
+        if (index > -1) fileStore.splice(index, 1);
+      };
+      previewContainer.appendChild(row);
 
-  // 동일 파일 재업로드 가능하게 input 초기화
-  event.target.value = '';
+      // OCR 숫자 인식
+      Tesseract.recognize(imgDataUrl, 'eng', { logger: m => {} })
+        .then(({ data: { text } }) => {
+          const num = text.trim().match(/\d+/);
+          inputField.value = num ? num[0] : "인식불가";
+        })
+        .catch(() => {
+          inputField.value = "인식불가";
+        });
+    };
+    reader.readAsDataURL(file);
+  }
+}
+
+// PC 업로드
+document.getElementById("imageInput").addEventListener("change", function () {
+  handleFiles(this.files, document.getElementById("previewContainer"), uploadedFilesPC);
 });
 
-// 이미지 해시 생성
-async function getFileHash(file) {
-  const arrayBuffer = await file.arrayBuffer();
-  const hashBuffer = await crypto.subtle.digest('SHA-256', arrayBuffer);
-  const hashArray = Array.from(new Uint8Array(hashBuffer));
-  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-}
+// PC 드래그 드롭
+document.getElementById("dropBox").addEventListener("dragover", e => e.preventDefault());
+document.getElementById("dropBox").addEventListener("drop", function (e) {
+  e.preventDefault();
+  handleFiles(e.dataTransfer.files, document.getElementById("previewContainer"), uploadedFilesPC);
+});
 
-// OCR 시뮬레이션 함수
-async function simulateOCR(file) {
-  return new Promise((resolve) => {
-    // 파일명에 숫자가 있다면 그걸 추출해서 리턴
-    const match = file.name.match(/\d+/);
-    resolve(match ? match[0] : '');
-  });
-}
+// Mobile 업로드
+document.getElementById("imageInputMobile").addEventListener("change", function () {
+  handleFiles(this.files, document.getElementById("previewContainerMobile"), uploadedFilesMobile);
+});
+
+// Mobile 드래그 드롭
+document.getElementById("dropBoxMobile").addEventListener("dragover", e => e.preventDefault());
+document.getElementById("dropBoxMobile").addEventListener("drop", function (e) {
+  e.preventDefault();
+  handleFiles(e.dataTransfer.files, document.getElementById("previewContainerMobile"), uploadedFilesMobile);
+});
