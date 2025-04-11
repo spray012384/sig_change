@@ -1,187 +1,160 @@
-<!DOCTYPE html>
-<html lang="ko">
+<!-- v.1.7.8 --><!DOCTYPE html><html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <title>이미지 숫자 변환기 v.1.7.9</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>이미지 숫자 변환기</title>
   <style>
     body {
-      font-family: 'Pretendard', sans-serif;
-      max-width: 600px;
-      margin: 40px auto;
+      font-family: sans-serif;
       padding: 20px;
-      background-color: #f9f9f9;
+      background: #f9f9f9;
+      text-align: center;
     }
     h2 {
-      font-size: 18px;
-      border-bottom: 2px solid #ddd;
-      padding-bottom: 6px;
-      margin-top: 30px;
+      font-size: 1.3em;
+      margin-bottom: 8px;
+      font-weight: bold;
     }
-    .upload-section {
-      margin-bottom: 20px;
+    .section {
+      margin-bottom: 40px;
+    }
+    .upload-area {
+      border: 2px dashed #ccc;
+      padding: 20px;
+      border-radius: 12px;
+      background: white;
+      display: inline-block;
+      position: relative;
     }
     .upload-label {
-      font-weight: bold;
-      margin-bottom: 8px;
       display: inline-block;
+      margin-top: 10px;
+      font-weight: bold;
     }
     input[type="file"] {
       display: block;
-      margin-top: 6px;
+      margin: 10px auto;
     }
-    .preview {
-      margin-top: 20px;
+    .preview-container {
+      margin-top: 10px;
+      position: relative;
+      display: inline-block;
     }
-    .preview-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 12px;
-    }
-    .preview-img {
+    .thumbnail {
       width: 80px;
       height: 60px;
       object-fit: cover;
-      border: 1px solid #ccc;
-    }
-    .input-number {
-      width: 60px;
-      padding: 4px;
-    }
-    .arrow {
-      font-weight: bold;
-      font-size: 16px;
-    }
-    .text-label {
-      font-size: 14px;
-      font-weight: bold;
+      border-radius: 4px;
+      border: 1px solid #aaa;
     }
     .remove-btn {
-      cursor: pointer;
-      color: red;
-      font-size: 20px;
-      margin-left: auto;
-    }
-    .separator {
-      border-top: 1px solid #ccc;
-      margin: 20px 0 10px;
-    }
-    .btn-wrap {
-      text-align: center;
-      margin-top: 20px;
-    }
-    button {
-      background-color: #4CAF50;
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      background: #f44336;
       color: white;
-      padding: 10px 20px;
       border: none;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      font-size: 14px;
+      cursor: pointer;
+      line-height: 20px;
+    }
+    .input-line {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .input-line input[type="number"] {
+      width: 60px;
+      padding: 4px;
+      text-align: center;
+    }
+    .input-line .arrow {
+      font-size: 18px;
+    }
+    .convert-button {
+      background-color: #2196f3;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      margin-top: 32px;
       border-radius: 12px;
       font-size: 16px;
       cursor: pointer;
     }
-    .cancel-btn {
-      float: right;
-      background: #aaa;
-      margin-top: 5px;
+    hr {
+      margin: 30px 0 10px;
     }
   </style>
 </head>
 <body>
+  <div class="section">
+    <h2>pc용 이미지 업로드</h2>
+    <div class="upload-area">
+      <input type="file" id="pc-upload" accept="image/*" />
+      <div class="preview-container" id="pc-preview"></div>
+      <div class="input-line">
+        <span>기존 숫자</span>
+        <input type="number" id="pc-old" placeholder="0" />
+        <span class="arrow">→</span>
+        <span>변경 숫자</span>
+        <input type="number" id="pc-new" placeholder="0" />
+      </div>
+    </div>
+  </div>  <div class="section">
+    <h2>mobile용 이미지 업로드</h2>
+    <div class="upload-area">
+      <input type="file" id="mobile-upload" accept="image/*" />
+      <div class="preview-container" id="mobile-preview"></div>
+      <div class="input-line">
+        <span>기존 숫자</span>
+        <input type="number" id="mobile-old" placeholder="0" />
+        <span class="arrow">→</span>
+        <span>변경 숫자</span>
+        <input type="number" id="mobile-new" placeholder="0" />
+      </div>
+    </div>
+  </div>  <hr />
+  <div style="height: 32px;"></div>
+  <button class="convert-button">변환하기</button>  <script>
+    function setupImageUpload(inputId, previewId) {
+      const input = document.getElementById(inputId);
+      const preview = document.getElementById(previewId);
+      let currentSrc = "";
 
-  <h2>pc용 이미지 업로드</h2>
-  <div class="upload-section">
-    <label class="upload-label" for="pcUpload">pc용 이미지 선택</label>
-    <input type="file" id="pcUpload" accept="image/*" multiple />
-    <button class="cancel-btn" onclick="clearPreview('pc')">취소</button>
-  </div>
-
-  <h2>mobile용 이미지 업로드</h2>
-  <div class="upload-section">
-    <label class="upload-label" for="mobileUpload">mobile용 이미지 선택</label>
-    <input type="file" id="mobileUpload" accept="image/*" multiple />
-    <button class="cancel-btn" onclick="clearPreview('mobile')">취소</button>
-  </div>
-
-  <div class="separator"></div>
-
-  <div class="preview" id="preview"></div>
-
-  <div style="height: 40px;"></div>
-
-  <div class="btn-wrap">
-    <button onclick="convertNumbers()">변환하기</button>
-  </div>
-
-  <script>
-    const pcInput = document.getElementById('pcUpload');
-    const mobileInput = document.getElementById('mobileUpload');
-    const preview = document.getElementById('preview');
-    const uploadedFiles = new Set();
-
-    function handleFileSelect(input) {
-      input.addEventListener('click', () => {
-        input.value = ''; // 같은 파일도 선택 가능하게
-      });
-
-      input.addEventListener('change', () => {
-        const files = Array.from(input.files);
-        files.forEach(file => {
-          const fileKey = input.id + file.name;
-
-          if (!uploadedFiles.has(fileKey)) {
-            uploadedFiles.add(fileKey);
-            const reader = new FileReader();
-            reader.onload = e => {
-              const div = document.createElement("div");
-              div.className = "preview-item";
-              div.innerHTML = `
-                <img src="${e.target.result}" class="preview-img" />
-                <span class="text-label">기존 숫자</span>
-                <input type="number" class="input-number" />
-                <span class="arrow">→</span>
-                <span class="text-label">변경 숫자</span>
-                <input type="number" class="input-number" />
-                <span class="remove-btn" onclick="this.parentElement.remove()">×</span>
+      input.addEventListener("change", (event) => {
+        const file = event.target.files[0];
+        if (file && file.type.startsWith("image/")) {
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            if (e.target.result !== currentSrc) {
+              currentSrc = e.target.result;
+              preview.innerHTML = `
+                <img src="${e.target.result}" class="thumbnail" />
+                <button class="remove-btn" onclick="removePreview('${previewId}', '${inputId}')">×</button>
               `;
-              preview.appendChild(div);
-            };
-            reader.readAsDataURL(file);
-          }
-        });
-      });
-    }
-
-    handleFileSelect(pcInput);
-    handleFileSelect(mobileInput);
-
-    function clearPreview(type) {
-      const inputs = {
-        pc: pcInput,
-        mobile: mobileInput
-      };
-      inputs[type].value = '';
-      const children = Array.from(preview.children);
-      children.forEach(child => {
-        const img = child.querySelector("img");
-        if (img && img.src.includes(inputs[type].id)) {
-          child.remove();
+            } else {
+              // 동일 파일 다시 선택했을 때도 강제로 반응하게 하기 위해 input 초기화
+              input.value = "";
+              input.dispatchEvent(new Event("change"));
+            }
+          };
+          reader.readAsDataURL(file);
         }
       });
     }
 
-    function convertNumbers() {
-      const items = document.querySelectorAll(".preview-item");
-      items.forEach(item => {
-        const [originInput, newInput] = item.querySelectorAll(".input-number");
-        const originVal = originInput.value;
-        const newVal = newInput.value;
-        console.log(`변환: ${originVal} → ${newVal}`);
-        // 변환 로직 처리...
-      });
-      alert("변환이 완료되었습니다.");
+    function removePreview(previewId, inputId) {
+      document.getElementById(previewId).innerHTML = "";
+      document.getElementById(inputId).value = "";
     }
-  </script>
 
-</body>
+    setupImageUpload("pc-upload", "pc-preview");
+    setupImageUpload("mobile-upload", "mobile-preview");
+  </script></body>
 </html>
-<!-- 버전: v.1.7.9 -->
+<!-- v.1.7.8 -->
