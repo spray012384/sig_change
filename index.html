@@ -1,4 +1,6 @@
-<!-- v.1.7.6 --><!DOCTYPE html><html lang="ko">
+<!-- v.1.7.7 -->
+<!DOCTYPE html>
+<html lang="ko">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -52,15 +54,25 @@
     .preview-item {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
     }
     .preview-img {
       width: 60px;
       height: 60px;
       object-fit: cover;
+      border-radius: 4px;
+    }
+    .text-label {
+      font-weight: bold;
+      font-size: 14px;
     }
     .input-number {
-      width: 60px;
+      width: 50px;
+      padding: 4px;
+    }
+    .arrow {
+      font-size: 18px;
+      margin: 0 4px;
     }
     .remove-btn {
       cursor: pointer;
@@ -88,38 +100,75 @@
       color: #999;
       margin-top: 40px;
     }
-    .bold-label {
-      font-weight: bold;
-    }
   </style>
 </head>
 <body>
   <h1>시그 이미지 숫자 변환</h1>
+
   <div class="section">
-    <h2 class="bold-label">PC용 이미지 업로드</h2>
+    <h2><b>PC용 이미지</b> 업로드</h2>
     <div class="upload-header">
-      <span class="bold-label">PC용 이미지</span>
-      <input type="file" multiple onchange="this.value=null" />
+      <span><b>PC용 이미지</b></span>
+      <input type="file" class="pc-input" multiple />
       <div class="drop-zone">원하시는 이미지를 여기에 드래그하세요.</div>
     </div>
     <div class="note">※ 최대 10개의 이미지를 업로드할 수 있습니다.</div>
-    <div class="preview-area">
+    <div class="preview-area pc-preview">
       <!-- PC 이미지 미리보기 항목 삽입 영역 -->
     </div>
-  </div>  <div class="section">
-    <h2 class="bold-label">Mobile용 이미지 업로드</h2>
+  </div>
+
+  <div class="section">
+    <h2><b>Mobile용 이미지</b> 업로드</h2>
     <div class="upload-header">
-      <span class="bold-label">Mobile용 이미지</span>
-      <input type="file" multiple onchange="this.value=null" />
+      <span><b>Mobile용 이미지</b></span>
+      <input type="file" class="mobile-input" multiple />
       <div class="drop-zone">원하시는 이미지를 여기에 드래그하세요.</div>
     </div>
     <div class="note">※ 최대 10개의 이미지를 업로드할 수 있습니다.</div>
-    <div class="preview-area">
+    <div class="preview-area mobile-preview">
       <!-- Mobile 이미지 미리보기 항목 삽입 영역 -->
     </div>
-  </div>  <hr />
+  </div>
+
+  <hr />
   <button class="convert-btn">변환하기</button>
-  <div class="version">v.1.7.6</div>
+  <div class="version">v.1.7.7</div>
+
+  <script>
+    function handleFiles(files, previewContainer) {
+      Array.from(files).forEach(file => {
+        const reader = new FileReader();
+        reader.onload = e => {
+          const previewItem = document.createElement('div');
+          previewItem.className = 'preview-item';
+
+          previewItem.innerHTML = `
+            <img class="preview-img" src="${e.target.result}" />
+            <span class="text-label">기존 숫자</span>
+            <input class="input-number" type="number" placeholder="예: 10" />
+            <span class="arrow">→</span>
+            <span class="text-label">변경 숫자</span>
+            <input class="input-number" type="number" />
+            <span class="remove-btn" onclick="this.parentElement.remove()">×</span>
+          `;
+
+          previewContainer.appendChild(previewItem);
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    document.querySelector('.pc-input').addEventListener('change', function() {
+      handleFiles(this.files, document.querySelector('.pc-preview'));
+      this.value = ''; // 같은 파일 다시 선택해도 이벤트 발생
+    });
+
+    document.querySelector('.mobile-input').addEventListener('change', function() {
+      handleFiles(this.files, document.querySelector('.mobile-preview'));
+      this.value = '';
+    });
+  </script>
 </body>
 </html>
-<!-- v.1.7.6 -->
+<!-- v.1.7.7 -->
