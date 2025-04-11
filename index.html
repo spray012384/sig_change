@@ -1,171 +1,148 @@
-<!-- v.1.3.2 -->
-<!DOCTYPE html>
-<html lang="ko">
+<!-- v.1.6.2 --><!DOCTYPE html><html lang="ko">
 <head>
   <meta charset="UTF-8" />
   <title>시그 이미지 숫자 변환</title>
   <style>
     body {
       font-family: sans-serif;
+      max-width: 800px;
+      margin: auto;
+      padding: 20px;
       text-align: center;
-      margin: 40px;
     }
     h1 {
-      font-size: 24px;
-      margin-bottom: 30px;
-    }
-    .section {
       margin-bottom: 40px;
     }
-    .upload-label {
-      display: inline-flex;
+    .upload-section {
+      margin-bottom: 40px;
+    }
+    .upload-row {
+      display: flex;
       align-items: center;
-      gap: 12px;
-      margin-bottom: 8px;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 10px;
     }
-    .file-input {
-      display: none;
-    }
-    .upload-box {
+    .drop-zone {
       border: 2px dashed #ccc;
       padding: 20px;
-      margin-top: 10px;
-      color: #999;
-      border-radius: 8px;
+      width: 100%;
+      color: #aaa;
+      font-size: 0.9em;
     }
-    .preview-container {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 20px;
+    .preview-section {
       margin-top: 20px;
     }
     .preview-item {
       display: flex;
-      flex-direction: column;
       align-items: center;
-    }
-    .preview-image {
-      max-width: 120px;
-      max-height: 120px;
-      margin-bottom: 6px;
-    }
-    .preview-controls {
-      display: flex;
-      align-items: center;
+      justify-content: center;
       gap: 10px;
+      margin-bottom: 10px;
     }
-    .input-box {
+    .preview-item img {
       width: 50px;
-      text-align: center;
+      height: 50px;
+      object-fit: cover;
+    }
+    input[type="number"] {
+      width: 80px;
+      padding: 5px;
     }
     .remove-btn {
       background: none;
       border: none;
-      font-size: 16px;
-      cursor: pointer;
+      font-weight: bold;
       color: black;
+      cursor: pointer;
+      font-size: 18px;
+    }
+    hr {
+      margin: 40px 0 20px;
     }
     .convert-btn {
-      margin-top: 50px;
-      padding: 14px 40px;
-      border-radius: 20px;
-      background-color: #007BFF;
+      padding: 15px 50px;
+      background-color: #007bff;
       color: white;
-      font-size: 16px;
       border: none;
+      border-radius: 30px;
+      font-size: 1em;
       cursor: pointer;
     }
     .version-text {
-      margin-top: 80px;
-      font-size: 12px;
-      color: #aaa;
-    }
-    .file-info {
-      font-size: 12px;
+      margin-top: 100px;
+      font-size: 0.8em;
       color: #999;
-      margin-top: 4px;
+    }
+    .upload-label {
+      white-space: nowrap;
     }
   </style>
 </head>
 <body>
-  <h1>시그 이미지 숫자 변환</h1>
-
-  <div class="section">
-    <div class="upload-label">
-      <label>PC용 시그 이미지 업로드</label>
-      <input type="file" id="pc-upload" class="file-input" multiple accept="image/*" />
-      <button onclick="document.getElementById('pc-upload').click()">파일 선택</button>
+  <h1>시그 이미지 숫자 변환</h1>  <div class="upload-section">
+    <div class="upload-label">PC용 이미지</div>
+    <div class="upload-row">
+      <input type="file" multiple accept="image/*" id="pc-upload" />
     </div>
-    <div class="upload-box" onclick="document.getElementById('pc-upload').click()">또는 이미지를 여기에 드래그 앤 드롭</div>
-    <div class="file-info">최대 업로드 파일 개수는 10개</div>
-    <div id="pc-preview" class="preview-container"></div>
-  </div>
-
-  <div class="section">
-    <div class="upload-label">
-      <label>Mobile용 시그 이미지 업로드</label>
-      <input type="file" id="mobile-upload" class="file-input" multiple accept="image/*" />
-      <button onclick="document.getElementById('mobile-upload').click()">파일 선택</button>
+    <div class="drop-zone" id="pc-drop">원하시는 이미지를 이곳에 드래그하세요</div>
+    <div style="font-size: 0.8em; color: #888; margin-top: 5px;">최대 업로드 파일 개수: 10개</div>
+    <div class="preview-section" id="pc-preview"></div>
+  </div>  <div class="upload-section">
+    <div class="upload-label">Mobile용 이미지</div>
+    <div class="upload-row">
+      <input type="file" multiple accept="image/*" id="mobile-upload" />
     </div>
-    <div class="upload-box" onclick="document.getElementById('mobile-upload').click()">또는 이미지를 여기에 드래그 앤 드롭</div>
-    <div class="file-info">최대 업로드 파일 개수는 10개</div>
-    <div id="mobile-preview" class="preview-container"></div>
-  </div>
-
+    <div class="drop-zone" id="mobile-drop">원하시는 이미지를 이곳에 드래그하세요</div>
+    <div style="font-size: 0.8em; color: #888; margin-top: 5px;">최대 업로드 파일 개수: 10개</div>
+    <div class="preview-section" id="mobile-preview"></div>
+  </div>  <hr />
   <button class="convert-btn">변환하기</button>
+  <div class="version-text">v.1.6.2</div>  <script>
+    function setupUpload(idPrefix) {
+      const fileInput = document.getElementById(`${idPrefix}-upload`);
+      const dropZone = document.getElementById(`${idPrefix}-drop`);
+      const preview = document.getElementById(`${idPrefix}-preview`);
+      let uploadedFiles = [];
 
-  <div class="version-text">v.1.3.2</div>
+      const handleFiles = (files) => {
+        [...files].forEach(file => {
+          const reader = new FileReader();
+          reader.onload = e => {
+            const div = document.createElement('div');
+            div.className = 'preview-item';
+            div.innerHTML = `
+              <img src="${e.target.result}" alt="preview" />
+              <input type="number" placeholder="기존 숫자" />
+              <input type="number" placeholder="변경 숫자" />
+              <button class="remove-btn" onclick="this.parentElement.remove()">×</button>
+            `;
+            preview.appendChild(div);
+          };
+          reader.readAsDataURL(file);
+        });
+        fileInput.value = null; // allow same file re-upload
+      };
 
-  <script>
-    function handleFiles(inputId, previewId, files) {
-      const preview = document.getElementById(previewId);
-      Array.from(files).forEach(file => {
-        const reader = new FileReader();
-        reader.onload = e => {
-          const container = document.createElement('div');
-          container.className = 'preview-item';
+      fileInput.addEventListener('change', e => handleFiles(e.target.files));
 
-          const img = document.createElement('img');
-          img.src = e.target.result;
-          img.className = 'preview-image';
-
-          const controls = document.createElement('div');
-          controls.className = 'preview-controls';
-
-          const original = document.createElement('input');
-          original.placeholder = '기존';
-          original.className = 'input-box';
-
-          const changed = document.createElement('input');
-          changed.placeholder = '변경';
-          changed.className = 'input-box';
-
-          const removeBtn = document.createElement('button');
-          removeBtn.innerHTML = '✕';
-          removeBtn.className = 'remove-btn';
-          removeBtn.onclick = () => preview.removeChild(container);
-
-          controls.appendChild(original);
-          controls.appendChild(changed);
-          controls.appendChild(removeBtn);
-
-          container.appendChild(img);
-          container.appendChild(controls);
-          preview.appendChild(container);
-        };
-        reader.readAsDataURL(file);
+      dropZone.addEventListener('dragover', e => {
+        e.preventDefault();
+        dropZone.style.borderColor = '#007bff';
+      });
+      dropZone.addEventListener('dragleave', () => {
+        dropZone.style.borderColor = '#ccc';
+      });
+      dropZone.addEventListener('drop', e => {
+        e.preventDefault();
+        dropZone.style.borderColor = '#ccc';
+        handleFiles(e.dataTransfer.files);
       });
     }
 
-    document.getElementById('pc-upload').addEventListener('change', e => {
-      handleFiles('pc-upload', 'pc-preview', e.target.files);
-    });
-
-    document.getElementById('mobile-upload').addEventListener('change', e => {
-      handleFiles('mobile-upload', 'mobile-preview', e.target.files);
-    });
-  </script>
-</body>
+    setupUpload('pc');
+    setupUpload('mobile');
+  </script></body>
 </html>
-<!-- v.1.3.2 -->
+<!-- v.1.6.2 -->
