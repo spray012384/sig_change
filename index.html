@@ -1,155 +1,112 @@
-<!-- v.1.6.0 --><!DOCTYPE html><html lang="ko">
+<!-- v. 1.3.1 --><!DOCTYPE html><html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>시그 숫자 자동 변환기</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>시그 숫자 자동 변환</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #f9f9f9;
-      padding: 20px;
       text-align: center;
+      margin: 20px;
     }
-    h1 {
-      margin-bottom: 5px;
-    }
-    .version {
-      font-size: 0.8em;
-      color: gray;
-      margin-bottom: 20px;
+    h2 {
+      margin-top: 40px;
     }
     .section {
-      border-top: 2px solid #ccc;
-      margin-top: 30px;
-      padding-top: 20px;
+      margin-bottom: 40px;
     }
-    .upload-label {
-      font-weight: bold;
-      margin-bottom: 5px;
-    }
-    .upload-area {
+    .upload-section {
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 10px;
-      margin-bottom: 5px;
+      flex-wrap: wrap;
     }
-    .upload-area input[type="file"] {
-      display: inline;
+    .upload-info {
+      font-size: 0.9em;
+      color: #888;
+      margin-top: 5px;
     }
-    .hint {
-      font-size: 0.8em;
-      color: gray;
-      margin-bottom: 10px;
+    .drop-zone {
+      border: 2px dashed #ccc;
+      padding: 20px;
+      width: 80%;
+      margin: 10px auto;
+      border-radius: 10px;
     }
-    .preview {
+    .preview-list {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 10px;
-      margin-top: 10px;
+      gap: 20px;
     }
-    .image-row {
+    .preview-item {
       display: flex;
       align-items: center;
       gap: 10px;
-      margin-bottom: 10px;
-      background: none;
-      padding: 5px;
+      flex-wrap: wrap;
     }
-    .image-row img {
+    .preview-item img {
       max-width: 100px;
       max-height: 100px;
+      object-fit: contain;
     }
-    .image-row input[type="text"] {
-      width: 80px;
-      padding: 4px;
+    .input-label {
+      margin-right: 5px;
     }
     .remove-btn {
+      background: none;
+      border: none;
       color: black;
+      font-size: 1.2em;
       cursor: pointer;
-      font-weight: bold;
     }
     .convert-button {
-      margin-top: 30px;
       padding: 15px 40px;
-      font-size: 18px;
-      background-color: #007BFF;
+      background-color: #007bff;
       color: white;
       border: none;
-      border-radius: 30px;
-      cursor: pointer;
+      border-radius: 20px;
+      font-size: 1.2em;
+      margin-top: 30px;
+    }
+    .version-text {
+      font-size: 0.8em;
+      color: #888;
+      margin-top: 80px;
+    }
+    .input-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 5px;
     }
   </style>
 </head>
 <body>
-  <h1>시그 숫자 자동 변환기</h1>
-  <div class="version">v.1.6.0</div>  <div class="section">
-    <div class="upload-label">PC용 시그 이미지 업로드</div>
-    <div class="upload-area">
-      <input type="file" id="pcUpload" multiple accept="image/*">
+  <h1>시그 숫자 자동 변환</h1>  <div class="section">
+    <h2>PC용 시그 업로드</h2>
+    <div class="upload-section">
+      <label for="pc-upload">PC 이미지 선택</label>
+      <input type="file" id="pc-upload" multiple />
     </div>
-    <div class="hint">최대 업로드 파일 개수: 10개</div>
-    <div id="pcPreview" class="preview"></div>
+    <div class="drop-zone">여기에 PC 이미지를 드래그 앤 드롭하세요</div>
+    <div class="upload-info">최대 업로드 파일 개수는 10개</div>
   </div>  <div class="section">
-    <div class="upload-label">모바일용 시그 이미지 업로드</div>
-    <div class="upload-area">
-      <input type="file" id="mobileUpload" multiple accept="image/*">
+    <h2>PC용 이미지 미리보기</h2>
+    <div id="pc-preview" class="preview-list"></div>
+  </div>  <div class="section">
+    <h2>모바일용 시그 업로드</h2>
+    <div class="upload-section">
+      <label for="mobile-upload">모바일 이미지 선택</label>
+      <input type="file" id="mobile-upload" multiple />
     </div>
-    <div class="hint">최대 업로드 파일 개수: 10개</div>
-    <div id="mobilePreview" class="preview"></div>
-  </div><button class="convert-button">변환하기</button>
-
-  <div class="version">v.1.6.0</div>  <script>
-    const handleImageUpload = (input, previewContainerId) => {
-      const files = Array.from(input.files);
-      const preview = document.getElementById(previewContainerId);
-
-      files.forEach(file => {
-        const reader = new FileReader();
-        reader.onload = () => {
-          const row = document.createElement('div');
-          row.className = 'image-row';
-
-          const img = document.createElement('img');
-          img.src = reader.result;
-
-          const originalLabel = document.createElement('span');
-          originalLabel.textContent = '기존 숫자';
-
-          const originalInput = document.createElement('input');
-          originalInput.type = 'text';
-
-          const targetLabel = document.createElement('span');
-          targetLabel.textContent = '변경 숫자';
-
-          const targetInput = document.createElement('input');
-          targetInput.type = 'text';
-
-          const remove = document.createElement('span');
-          remove.textContent = '×';
-          remove.className = 'remove-btn';
-          remove.onclick = () => preview.removeChild(row);
-
-          row.appendChild(img);
-          row.appendChild(originalLabel);
-          row.appendChild(originalInput);
-          row.appendChild(targetLabel);
-          row.appendChild(targetInput);
-          row.appendChild(remove);
-
-          preview.appendChild(row);
-        };
-        reader.readAsDataURL(file);
-      });
-    };
-
-    document.getElementById('pcUpload').addEventListener('change', function() {
-      handleImageUpload(this, 'pcPreview');
-    });
-
-    document.getElementById('mobileUpload').addEventListener('change', function() {
-      handleImageUpload(this, 'mobilePreview');
-    });
-  </script></body>
-</html><!-- v.1.6.0 -->
+    <div class="drop-zone">여기에 모바일 이미지를 드래그 앤 드롭하세요</div>
+    <div class="upload-info">최대 업로드 파일 개수는 10개</div>
+  </div>  <div class="section">
+    <h2>모바일용 이미지 미리보기</h2>
+    <div id="mobile-preview" class="preview-list"></div>
+  </div>  <hr style="margin-top: 40px;">
+  <button class="convert-button">변환하기</button>  <div class="version-text">v. 1.3.1</div>
+</body>
+</html>
+<!-- v. 1.3.1 -->
