@@ -1,4 +1,4 @@
-<!-- ht.v.1.7.9 -->
+<!-- ht v.1.7.9 -->
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -54,7 +54,7 @@
 
     .preview-section {
       display: flex;
-      flex-direction: column-reverse; /* 최신 이미지가 위로 오도록 */
+      flex-direction: column;
       gap: 10px;
       margin-top: 20px;
     }
@@ -80,8 +80,9 @@
     .preview-row .remove {
       margin-left: auto;
       cursor: pointer;
-      color: black;
       font-weight: bold;
+      font-size: 20px;
+      color: black;
     }
 
     .convert-btn {
@@ -106,21 +107,21 @@
   <h1>시그 이미지 숫자 변경기</h1>
   <div class="section">
     <hr />
-    <h2><b>pc용 이미지 업로드</b></h2>
+    <h2><b>PC용 이미지 업로드</b></h2>
     <div class="upload-row">
       <label><b>이미지 업로드</b></label>
       <input type="file" id="imageInput" accept="image/*" multiple />
-      <div class="drop-box" id="dropBox">업로드할 이미지를 여기로 드래그앤 드롭</div>
+      <div class="drop-box" id="dropBox">업로드할 이미지를 여기로 드래그앤드롭</div>
     </div>
     <div style="font-size: 12px; color: #999;">이미지는 최대 10개까지 업로드 가능합니다.</div>
     <div id="previewContainer" class="preview-section"></div>
 
     <hr />
-    <h2><b>mobile용 이미지 업로드</b></h2>
+    <h2><b>모바일용 이미지 업로드</b></h2>
     <div class="upload-row">
       <label><b>이미지 업로드</b></label>
       <input type="file" id="imageInputMobile" accept="image/*" multiple />
-      <div class="drop-box" id="dropBoxMobile">업로드할 이미지를 여기로 드래그앤 드롭</div>
+      <div class="drop-box" id="dropBoxMobile">업로드할 이미지를 여기로 드래그앤드롭</div>
     </div>
     <div style="font-size: 12px; color: #999;">이미지는 최대 10개까지 업로드 가능합니다.</div>
     <div id="previewContainerMobile" class="preview-section"></div>
@@ -134,10 +135,8 @@
     <div style="height: 5em;"></div>
   </div>
 
-  <!-- Tesseract.js 로딩 -->
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.0.0/dist/tesseract.min.js"></script>
-  <!-- 메인 기능 스크립트 -->
   <script src="main.js"></script>
 </body>
 </html>
-<!-- ht.v.1.7.9 -->
+<!-- ht v.1.7.9 -->
