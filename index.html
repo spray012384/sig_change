@@ -1,4 +1,4 @@
-<!-- v.1.7.6 --><!DOCTYPE html><html lang="ko">
+<!-- v.1.7.7 --><!DOCTYPE html><html lang="ko">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -52,9 +52,7 @@
     .preview-item {
       display: flex;
       align-items: center;
-      justify-content: space-between;
       gap: 10px;
-      width: 100%;
     }
     .preview-img {
       width: 80px;
@@ -64,16 +62,20 @@
     .input-number {
       width: 60px;
     }
+    .arrow {
+      font-weight: bold;
+      font-size: 16px;
+    }
     .remove-btn {
+      margin-left: auto;
       cursor: pointer;
       color: black;
       font-weight: bold;
       font-size: 18px;
-      margin-left: auto;
     }
     .convert-btn {
-      margin-top: 60px;
-      padding: 16px 48px;
+      margin-top: 50px;
+      padding: 18px 48px;
       font-size: 18px;
       border: none;
       border-radius: 12px;
@@ -85,45 +87,79 @@
       width: 100%;
       max-width: 800px;
       margin-top: 60px;
-      border: none;
-      border-top: 1px solid #ccc;
+      border: 0;
+      height: 1px;
+      background-color: #ccc;
     }
     .version {
       font-size: 12px;
       color: #999;
       margin-top: 40px;
     }
-    .bold-label {
+    .bold {
       font-weight: bold;
     }
   </style>
 </head>
 <body>
-  <h1>시그 이미지 숫자 변환</h1>  <div class="section">
-    <h2 class="bold-label">PC용 이미지 업로드</h2>
+  <h1>시그 이미지 숫자 변환</h1>
+  <div class="section">
+    <h2 class="bold">PC용 이미지 업로드</h2>
     <div class="upload-header">
-      <span class="bold-label">PC용 이미지</span>
-      <input type="file" multiple />
+      <span class="bold">PC용 이미지</span>
+      <input type="file" multiple id="pc-upload" />
       <div class="drop-zone">원하시는 이미지를 여기에 드래그하세요.</div>
     </div>
     <div class="note">※ 최대 10개의 이미지를 업로드할 수 있습니다.</div>
-    <div class="preview-area">
-      <!-- PC 이미지 미리보기 항목 삽입 영역 -->
-    </div>
-  </div>  <hr />  <div class="section">
-    <h2 class="bold-label">Mobile용 이미지 업로드</h2>
+    <div class="preview-area" id="pc-preview-area"></div>
+  </div>
+  <hr />
+  <div class="section">
+    <h2 class="bold">Mobile용 이미지 업로드</h2>
+    <hr />
     <div class="upload-header">
-      <span class="bold-label">Mobile용 이미지</span>
-      <input type="file" multiple />
+      <span class="bold">Mobile용 이미지</span>
+      <input type="file" multiple id="mobile-upload" />
       <div class="drop-zone">원하시는 이미지를 여기에 드래그하세요.</div>
     </div>
     <div class="note">※ 최대 10개의 이미지를 업로드할 수 있습니다.</div>
-    <div class="preview-area">
-      <!-- Mobile 이미지 미리보기 항목 삽입 영역 -->
-    </div>
-  </div>  <hr /><button class="convert-btn">변환하기</button>
+    <div class="preview-area" id="mobile-preview-area"></div>
+  </div>
+  <hr />
+  <div style="height: 32px;"></div>
+  <button class="convert-btn">변환하기</button>
+  <div class="version">v.1.7.7</div>  <script>
+    function handleUpload(inputId, previewId) {
+      const input = document.getElementById(inputId);
+      const previewArea = document.getElementById(previewId);
 
-  <div class="version">v.1.7.6</div>
-</body>
+      input.addEventListener("change", (e) => {
+        const files = Array.from(e.target.files);
+        previewArea.innerHTML = "";
+
+        files.forEach((file, index) => {
+          const reader = new FileReader();
+          reader.onload = () => {
+            const item = document.createElement("div");
+            item.className = "preview-item";
+            item.innerHTML = `
+              <img src="${reader.result}" class="preview-img" />
+              <span>기존 숫자</span>
+              <input type="number" class="input-number" value="" placeholder="예: 5" />
+              <span class="arrow">→</span>
+              <span>변경 숫자</span>
+              <input type="number" class="input-number" value="" placeholder="예: 10" />
+              <span class="remove-btn" onclick="this.parentNode.remove()">×</span>
+            `;
+            previewArea.appendChild(item);
+          };
+          reader.readAsDataURL(file);
+        });
+      });
+    }
+
+    handleUpload("pc-upload", "pc-preview-area");
+    handleUpload("mobile-upload", "mobile-preview-area");
+  </script></body>
 </html>
-<!-- v.1.7.6 -->
+<!-- v.1.7.7 -->
