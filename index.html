@@ -3,7 +3,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>시그 이미지 숫자 변경기</title>
   <style>
     body {
@@ -42,8 +42,8 @@
       padding: 20px;
       text-align: center;
       flex: 1;
-      border-radius: 12px;
-      color: #888;
+      color: gray;
+      border-radius: 10px;
     }
 
     .upload-info {
@@ -66,8 +66,10 @@
     }
 
     .preview-row img {
-      height: 60px;
-      object-fit: contain;
+      width: 80px;
+      height: 80px;
+      object-fit: cover;
+      border-radius: 6px;
     }
 
     .preview-row input {
@@ -78,9 +80,8 @@
     .preview-row .remove {
       margin-left: auto;
       cursor: pointer;
-      color: #000;
+      color: black;
       font-weight: bold;
-      font-size: 18px;
     }
 
     .convert-btn {
@@ -97,29 +98,17 @@
     .version {
       font-size: 12px;
       color: #aaa;
-      margin-top: 20px;
-      text-align: center;
+      margin-top: 40px;
     }
-
-    .center-wrapper {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    .bold-label {
-      font-weight: bold;
-    }
-
   </style>
 </head>
 <body>
   <h1>시그 이미지 숫자 변경기</h1>
   <div class="section">
     <hr />
-    <h2 class="bold-label">pc용 이미지 업로드</h2>
+    <h2><b>pc용 이미지 업로드</b></h2>
     <div class="upload-row">
-      <label class="bold-label">이미지 업로드</label>
+      <label><b>이미지 업로드</b></label>
       <input type="file" id="imageInput" accept="image/*" multiple />
       <div class="drop-box" id="dropBox">업로드할 이미지를 여기로 드래그앤 드롭</div>
     </div>
@@ -127,21 +116,22 @@
     <div id="previewContainer" class="preview-section"></div>
 
     <hr />
-    <h2 class="bold-label">mobile용 이미지 업로드</h2>
+    <h2><b>mobile용 이미지 업로드</b></h2>
     <div class="upload-row">
-      <label class="bold-label">이미지 업로드</label>
+      <label><b>이미지 업로드</b></label>
       <input type="file" id="imageInputMobile" accept="image/*" multiple />
       <div class="drop-box" id="dropBoxMobile">업로드할 이미지를 여기로 드래그앤 드롭</div>
     </div>
     <div style="font-size: 12px; color: #999;">이미지는 최대 10개까지 업로드 가능합니다.</div>
-
     <div id="previewContainerMobile" class="preview-section"></div>
 
     <hr />
-    <div class="center-wrapper">
+    <div style="height: 2em;"></div>
+    <div style="text-align: center;">
       <button class="convert-btn">변환하기</button>
       <div class="version">v.1.7.7 | 250411</div>
     </div>
+    <div style="height: 5em;"></div>
   </div>
 
   <script>
@@ -159,7 +149,7 @@
             <img src="${e.target.result}" alt="preview" />
             <span>기존 숫자</span><input type="text" value="${index + 1}" />
             <span>수정할 숫자</span><input type="text" value="" />
-            <span class="remove">×</span>
+            <span class="remove">✕</span>
           `;
           row.querySelector(".remove").onclick = () => row.remove();
           previewContainer.appendChild(row);
@@ -183,7 +173,6 @@
       handleFiles(e.dataTransfer.files, document.getElementById("previewContainer"));
     });
 
-    // mobile용
     document.getElementById("imageInputMobile").addEventListener("change", function () {
       if (this.files.length > MAX_FILES) {
         alert("1회 처리 가능한 파일은 최대 10개입니다.");
