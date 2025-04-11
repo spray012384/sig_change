@@ -1,174 +1,120 @@
-<!-- v.1.6.3 --><!DOCTYPE html><html lang="ko">
+<!-- v.1.7.4 --><!DOCTYPE html><html lang="ko">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>시그 이미지 숫자 변환</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      padding: 40px;
-      max-width: 900px;
-      margin: auto;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
     }
     h1 {
       text-align: center;
-    }
-    .upload-section {
       margin-bottom: 30px;
     }
-    .upload-label {
-      font-weight: bold;
-      margin-right: 10px;
-    }
-    .upload-row {
-      display: flex;
-      align-items: center;
-      margin-bottom: 10px;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-    .drop-box {
-      border: 2px dashed #ccc;
-      padding: 14px 18px;
-      border-radius: 8px;
-      flex: 1;
-      min-width: 250px;
-      text-align: center;
-    }
-    .preview-section {
+    .section {
+      width: 100%;
+      max-width: 800px;
       margin-bottom: 40px;
     }
-    .preview-row {
+    .upload-header {
       display: flex;
       align-items: center;
+      gap: 10px;
       margin-bottom: 8px;
-      text-align: left;
+    }
+    .drop-zone {
+      flex: 1;
+      height: 50px;
+      border: 2px dashed #ccc;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      color: #888;
+    }
+    .note {
+      font-size: 12px;
+      color: #aaa;
+      margin-top: 4px;
+    }
+    .preview-area {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .preview-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
     .preview-img {
-      width: 80px;
-      height: 80px;
+      width: 100px;
+      height: 100px;
       object-fit: cover;
-      margin-right: 14px;
     }
-    .number-box {
+    .input-number {
       width: 60px;
-      margin-right: 14px;
     }
-    .cancel-btn {
-      margin-left: 12px;
+    .remove-btn {
       cursor: pointer;
       color: black;
       font-weight: bold;
-      border: none;
-      background: none;
       font-size: 18px;
-    }
-    .divider {
-      border-top: 1px solid #ccc;
-      margin: 40px 0 20px 0;
     }
     .convert-btn {
-      padding: 14px 28px;
-      font-size: 18px;
+      margin-top: 30px;
+      padding: 14px 40px;
+      font-size: 16px;
       border: none;
+      border-radius: 8px;
       background-color: #007bff;
       color: white;
-      border-radius: 30px;
       cursor: pointer;
-      display: block;
-      margin: 40px auto 80px auto;
-      width: 300px;
+    }
+    hr {
+      width: 100%;
+      max-width: 800px;
+      margin-top: 60px;
     }
     .version {
-      text-align: center;
-      color: #aaa;
-      font-size: 14px;
-      margin-top: 100px;
+      font-size: 12px;
+      color: #999;
+      margin-top: 40px;
     }
   </style>
 </head>
 <body>
-  <h1>시그 이미지 숫자 변환</h1>  <!-- PC 이미지 업로드 -->  <div class="upload-section">
-    <div class="upload-row">
-      <span class="upload-label">PC용 이미지</span>
-      <input type="file" id="pcImageInput" multiple />
-      <span>최대 10개 업로드 가능</span>
-      <div class="drop-box" id="pcDropBox">원하시는 이미지를 이곳에 드래그하세요.</div>
+  <h1>시그 이미지 숫자 변환</h1>  <div class="section">
+    <h2>PC용 이미지 업로드</h2>
+    <div class="upload-header">
+      <span>PC용 이미지</span>
+      <input type="file" multiple />
+      <div class="drop-zone">원하시는 이미지를 여기에 드래그하세요.</div>
     </div>
-  </div>  <div class="preview-section" id="pcPreview"></div>  <!-- Mobile 이미지 업로드 -->  <div class="upload-section">
-    <div class="upload-row">
-      <span class="upload-label">Mobile용 이미지</span>
-      <input type="file" id="mobileImageInput" multiple />
-      <span>최대 10개 업로드 가능</span>
-      <div class="drop-box" id="mobileDropBox">원하시는 이미지를 이곳에 드래그하세요.</div>
+    <div class="note">※ 최대 10개의 이미지를 업로드할 수 있습니다.</div>
+    <div class="preview-area">
+      <!-- PC 이미지 미리보기 항목 삽입 영역 -->
     </div>
-  </div>  <div class="preview-section" id="mobilePreview"></div>  <div class="divider"></div>
-  <button class="convert-btn">변환하기</button>
-  <div class="version">v.1.6.3</div>  <script>
-    function setupImageUpload(inputId, dropBoxId, previewId) {
-      const input = document.getElementById(inputId);
-      const dropBox = document.getElementById(dropBoxId);
-      const preview = document.getElementById(previewId);
-      const uploadedImages = new Set();
-
-      function addImage(file) {
-        const url = URL.createObjectURL(file);
-        if (!uploadedImages.has(url)) {
-          uploadedImages.add(url);
-
-          const row = document.createElement('div');
-          row.className = 'preview-row';
-
-          const img = document.createElement('img');
-          img.src = url;
-          img.className = 'preview-img';
-
-          const currentNumber = document.createElement('span');
-          currentNumber.textContent = '기존: ?';
-          currentNumber.style.marginRight = '10px';
-
-          const inputBox = document.createElement('input');
-          inputBox.className = 'number-box';
-          inputBox.type = 'number';
-
-          const cancel = document.createElement('button');
-          cancel.className = 'cancel-btn';
-          cancel.textContent = '×';
-          cancel.onclick = () => {
-            preview.removeChild(row);
-            uploadedImages.delete(url);
-          };
-
-          row.appendChild(img);
-          row.appendChild(currentNumber);
-          row.appendChild(inputBox);
-          row.appendChild(cancel);
-          preview.appendChild(row);
-        }
-      }
-
-      input.addEventListener('change', (e) => {
-        [...e.target.files].forEach(addImage);
-      });
-
-      dropBox.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        dropBox.style.borderColor = '#007bff';
-      });
-
-      dropBox.addEventListener('dragleave', () => {
-        dropBox.style.borderColor = '#ccc';
-      });
-
-      dropBox.addEventListener('drop', (e) => {
-        e.preventDefault();
-        dropBox.style.borderColor = '#ccc';
-        [...e.dataTransfer.files].forEach(addImage);
-      });
-    }
-
-    setupImageUpload('pcImageInput', 'pcDropBox', 'pcPreview');
-    setupImageUpload('mobileImageInput', 'mobileDropBox', 'mobilePreview');
-  </script></body>
+  </div>  <div class="section">
+    <h2>Mobile용 이미지 업로드</h2>
+    <div class="upload-header">
+      <span>Mobile용 이미지</span>
+      <input type="file" multiple />
+      <div class="drop-zone">원하시는 이미지를 여기에 드래그하세요.</div>
+    </div>
+    <div class="note">※ 최대 10개의 이미지를 업로드할 수 있습니다.</div>
+    <div class="preview-area">
+      <!-- Mobile 이미지 미리보기 항목 삽입 영역 -->
+    </div>
+  </div>  <hr />
+  <button class="convert-btn">변환하기</button>  <div class="version">v.1.7.4</div>
+</body>
 </html>
-<!-- v.1.6.3 -->
+<!-- v.1.7.4 -->
