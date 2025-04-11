@@ -1,68 +1,71 @@
-const MAX_FILES = 10;
-const uploadedFilesPC = [];
-const uploadedFilesMobile = [];
+// v.1.7.8
 
-function handleFiles(files, previewContainer, fileStore) {
-  const newFiles = Array.from(files);
-  for (const file of newFiles) {
-    if (fileStore.length >= MAX_FILES) {
-      alert("최대 10개까지 업로드 가능합니다.");
-      return;
+// 이미지 업로드 및 미리보기 핸들링 const imageInput = document.getElementById("imageInput"); const dropBox = document.getElementById("dropBox"); const previewContainer = document.getElementById("previewContainer");
+
+const imageInputMobile = document.getElementById("imageInputMobile"); const dropBoxMobile = document.getElementById("dropBoxMobile"); const previewContainerMobile = document.getElementById("previewContainerMobile");
+
+function handleFiles(files, isMobile = false) { const container = isMobile ? previewContainerMobile : previewContainer; container.innerHTML = ""; // 초기화 const fileArray = Array.from(files).slice(0, 10).reverse();
+
+fileArray.forEach((file, index) => { const reader = new FileReader(); reader.onload = (e) => { const previewRow = document.createElement("div"); previewRow.className = "preview-row";
+
+const img = document.createElement("img");
+  img.src = e.target.result;
+  img.style.width = "80px";
+  img.style.height = "60px";
+  img.style.objectFit = "cover";
+
+  const originText = document.createElement("span");
+  originText.textContent = "기존 숫자";
+  originText.style.width = "60px";
+
+  const originInput = document.createElement("input");
+  originInput.placeholder = "인식 중...";
+
+  const newText = document.createElement("span");
+  newText.textContent = "변경할 숫자";
+  newText.style.width = "80px";
+
+  const newInput = document.createElement("input");
+  newInput.placeholder = "입력";
+
+  const removeBtn = document.createElement("span");
+  removeBtn.className = "remove";
+  removeBtn.textContent = "X";
+  removeBtn.onclick = () => {
+    container.removeChild(previewRow);
+  };
+
+  previewRow.appendChild(img);
+  previewRow.appendChild(originText);
+  previewRow.appendChild(originInput);
+  previewRow.appendChild(newText);
+  previewRow.appendChild(newInput);
+  previewRow.appendChild(removeBtn);
+
+  container.appendChild(previewRow);
+
+  Tesseract.recognize(
+    file,
+    "eng",
+    {
+      logger: (m) => console.log(m)
     }
-    fileStore.push(file);
-    const reader = new FileReader();
-    reader.onload = function (e) {
-      const imgDataUrl = e.target.result;
-      const row = document.createElement("div");
-      row.className = "preview-row";
-      row.innerHTML = `
-        <img src="${imgDataUrl}" alt="preview" />
-        <span>기존 숫자</span><input type="text" value="인식 중..." readonly />
-        <span>수정할 숫자</span><input type="text" value="" />
-        <span class="remove">✕</span>
-      `;
-      const inputField = row.querySelector("input[type='text']");
-      row.querySelector(".remove").onclick = () => {
-        previewContainer.removeChild(row);
-        const index = fileStore.indexOf(file);
-        if (index > -1) fileStore.splice(index, 1);
-      };
-      previewContainer.appendChild(row);
+  ).then(({ data: { text } }) => {
+    const matched = text.match(/\d+/);
+    if (matched) {
+      originInput.value = matched[0];
+    } else {
+      originInput.value = "인식불가";
+    }
+  });
+};
+reader.readAsDataURL(file);
 
-      // OCR 숫자 인식
-      Tesseract.recognize(imgDataUrl, 'eng', { logger: m => {} })
-        .then(({ data: { text } }) => {
-          const num = text.trim().match(/\d+/);
-          inputField.value = num ? num[0] : "인식불가";
-        })
-        .catch(() => {
-          inputField.value = "인식불가";
-        });
-    };
-    reader.readAsDataURL(file);
-  }
-}
+}); }
 
-// PC 업로드
-document.getElementById("imageInput").addEventListener("change", function () {
-  handleFiles(this.files, document.getElementById("previewContainer"), uploadedFilesPC);
-});
+imageInput.addEventListener("change", (e) => handleFiles(e.target.files)); dropBox.addEventListener("dragover", (e) => { e.preventDefault(); dropBox.style.borderColor = "#000"; }); dropBox.addEventListener("dragleave", () => { dropBox.style.borderColor = "#aaa"; }); dropBox.addEventListener("drop", (e) => { e.preventDefault(); dropBox.style.borderColor = "#aaa"; handleFiles(e.dataTransfer.files); });
 
-// PC 드래그 드롭
-document.getElementById("dropBox").addEventListener("dragover", e => e.preventDefault());
-document.getElementById("dropBox").addEventListener("drop", function (e) {
-  e.preventDefault();
-  handleFiles(e.dataTransfer.files, document.getElementById("previewContainer"), uploadedFilesPC);
-});
+imageInputMobile.addEventListener("change", (e) => handleFiles(e.target.files, true)); dropBoxMobile.addEventListener("dragover", (e) => { e.preventDefault(); dropBoxMobile.style.borderColor = "#000"; }); dropBoxMobile.addEventListener("dragleave", () => { dropBoxMobile.style.borderColor = "#aaa"; }); dropBoxMobile.addEventListener("drop", (e) => { e.preventDefault(); dropBoxMobile.style.borderColor = "#aaa"; handleFiles(e.dataTransfer.files, true); });
 
-// Mobile 업로드
-document.getElementById("imageInputMobile").addEventListener("change", function () {
-  handleFiles(this.files, document.getElementById("previewContainerMobile"), uploadedFilesMobile);
-});
+// v.1.7.8
 
-// Mobile 드래그 드롭
-document.getElementById("dropBoxMobile").addEventListener("dragover", e => e.preventDefault());
-document.getElementById("dropBoxMobile").addEventListener("drop", function (e) {
-  e.preventDefault();
-  handleFiles(e.dataTransfer.files, document.getElementById("previewContainerMobile"), uploadedFilesMobile);
-});
