@@ -1,128 +1,18 @@
-<!-- v.1.7.6 --><!DOCTYPE html><html lang="ko">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>이미지 숫자 추출기</title>
-  <style>
-    body {
-      font-family: sans-serif;
-      padding: 20px;
-      background-color: #f9f9f9;
-      text-align: center;
-    }
-    h1 {
-      font-size: 24px;
-      margin-bottom: 20px;
-    }
-    .line {
-      border-top: 1px solid #ccc;
-      margin: 16px 0;
-    }
-    .upload-section {
-      margin-bottom: 16px;
-    }
-    .preview-area {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 12px;
-      margin-top: 12px;
-    }
-    .preview-item {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .preview-item img {
-      width: 100px;
-      height: 60px;
-      object-fit: cover;
-      border: 1px solid #ddd;
-    }
-    .input-box {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-    .input-box input[type="text"] {
-      width: 60px;
-      padding: 4px;
-      font-size: 14px;
-    }
-    .arrow {
-      font-size: 16px;
-    }
-    .cancel {
-      color: red;
-      cursor: pointer;
-      font-weight: bold;
-      margin-left: 4px;
-    }
-    .button-section {
-      margin-top: 24px;
-    }
-    .button-section button {
-      padding: 10px 20px;
-      font-size: 16px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      background-color: #007bff;
-      color: white;
-    }
-    .version-text {
-      margin-top: 40px;
-      font-size: 12px;
-      color: #999;
-    }
-  </style>
-</head>
-<body>
-  <h1>이미지 숫자 추출기 v.1.7.6</h1>  <div class="upload-section">
-    <div class="line"></div>
-    <p>mobile용 이미지 업로드</p>
-    <input type="file" id="imageUpload" multiple accept="image/*" />
-  </div>  <div id="preview" class="preview-area"></div>  <div class="button-section">
-    <div class="line"></div>
-    <button onclick="processImages()">변환하기</button>
-  </div>  <div class="version-text">v.1.7.6</div>  <script>
-    const imageUpload = document.getElementById("imageUpload");
-    const preview = document.getElementById("preview");
-
-    imageUpload.addEventListener("change", () => {
-      preview.innerHTML = "";
-      const files = Array.from(imageUpload.files);
-      files.forEach((file, index) => {
-        const reader = new FileReader();
-        reader.onload = function (e) {
-          const item = document.createElement("div");
-          item.className = "preview-item";
-
-          const img = document.createElement("img");
-          img.src = e.target.result;
-
-          const inputBox = document.createElement("div");
-          inputBox.className = "input-box";
-          inputBox.innerHTML = `
-            <span>기존 숫자</span>
-            <input type="text" placeholder="예: 3" />
-            <span class="arrow">→</span>
-            <span>변경 숫자</span>
-            <input type="text" placeholder="예: 5" />
-            <span class="cancel" onclick="this.parentElement.parentElement.remove()">X</span>
-          `;
-
-          item.appendChild(img);
-          item.appendChild(inputBox);
-
-          preview.appendChild(item);
-        };
-        reader.readAsDataURL(file);
-      });
-    });
-
-    function processImages() {
-      alert("변환 기능은 아직 구현되지 않았습니다.");
-    }
-  </script></body>
-</html><!-- v.1.7.6 -->
+<!-- v.1.7.6 --><div class="main-wrapper">
+  <h1 class="main-title">시그 이미지 숫자 변경기</h1>  <!-- PC용 이미지 업로드 -->  <div class="upload-section">
+    <input type="file" id="pc-image-upload" multiple accept="image/*" />
+  </div>  <!-- PC 이미지 미리보기 -->  <div id="pc-preview-area" class="preview-area hidden"></div>  <!-- mobile용 이미지 업로드 -->  <div class="upload-section">
+    <h2 class="section-title">mobile용 이미지 업로드</h2>
+    <div class="upload-text">mobile용 이미지 선택</div>
+    <input type="file" id="mobile-image-upload" multiple accept="image/*" />
+  </div>  <!-- 모바일 이미지 미리보기 -->  <div id="mobile-preview-area" class="preview-area hidden"></div>  <!-- 변환하기 버튼 -->  <div class="button-wrapper">
+    <button id="convert-button" class="btn btn-blue">변환하기</button>
+  </div>
+</div><!-- 미리보기 템플릿 --><template id="preview-template">
+  <div class="preview-item">
+    <img src="" class="thumbnail" />
+    <input type="text" class="original-number" placeholder="기존 숫자" />
+    <input type="text" class="new-number" placeholder="변경 숫자" />
+    <button class="delete-button">×</button>
+  </div>
+</template><!-- v.1.7.6 -->
