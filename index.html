@@ -1,51 +1,128 @@
-<!-- v.1.7.9 --><div class="main-wrapper">
-  <h2 class="text-center text-xl font-bold mb-2">이미지 숫자 추출기 <span class="text-sm font-normal">v.1.7.9</span></h2>  <!-- 이미지 업로드 구역 -->  <div class="border-t pt-2 mt-2">
-    <p class="text-sm font-bold mb-1">mobile용 이미지 업로드</p>
-    <div class="flex items-center gap-2 mb-2">
-      <input id="image-upload" type="file" accept="image/*" class="block w-full text-sm text-gray-500 file:mr-4 file:py-1 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" />
-      <button id="reset-button" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-1 px-3 rounded self-start">취소</button>
-    </div>
-  </div>  <!-- 업로드된 썸네일 및 입력영역 -->  <div id="preview-section" class="hidden mt-2 flex items-center gap-2">
-    <img id="thumbnail" src="" alt="Thumbnail" class="w-[80px] h-[60px] object-cover border" />
-    <span class="text-sm">기존 숫자</span>
-    <input id="original-number" type="text" class="border rounded px-2 py-1 w-16 text-center text-sm" readonly />
-    <span class="text-sm">→</span>
-    <span class="text-sm">변경 숫자</span>
-    <input id="new-number" type="text" class="border rounded px-2 py-1 w-16 text-center text-sm" />
-  </div>  <!-- 변환 버튼 -->  <hr class="my-4">
-  <div class="h-4"></div>
-  <button id="convert-button" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-lg w-full">변환하기</button>  <p class="text-xs text-center text-gray-400 mt-4">v.1.7.9</p>
-</div><script>
-  const imageInput = document.getElementById('image-upload');
-  const previewSection = document.getElementById('preview-section');
-  const thumbnail = document.getElementById('thumbnail');
-  const originalNumberInput = document.getElementById('original-number');
-  const resetButton = document.getElementById('reset-button');
+<!-- v.1.7.6 --><!DOCTYPE html><html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>이미지 숫자 추출기</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+      background-color: #f9f9f9;
+      text-align: center;
+    }
+    h1 {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+    .line {
+      border-top: 1px solid #ccc;
+      margin: 16px 0;
+    }
+    .upload-section {
+      margin-bottom: 16px;
+    }
+    .preview-area {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 12px;
+    }
+    .preview-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .preview-item img {
+      width: 100px;
+      height: 60px;
+      object-fit: cover;
+      border: 1px solid #ddd;
+    }
+    .input-box {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .input-box input[type="text"] {
+      width: 60px;
+      padding: 4px;
+      font-size: 14px;
+    }
+    .arrow {
+      font-size: 16px;
+    }
+    .cancel {
+      color: red;
+      cursor: pointer;
+      font-weight: bold;
+      margin-left: 4px;
+    }
+    .button-section {
+      margin-top: 24px;
+    }
+    .button-section button {
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      background-color: #007bff;
+      color: white;
+    }
+    .version-text {
+      margin-top: 40px;
+      font-size: 12px;
+      color: #999;
+    }
+  </style>
+</head>
+<body>
+  <h1>이미지 숫자 추출기 v.1.7.6</h1>  <div class="upload-section">
+    <div class="line"></div>
+    <p>mobile용 이미지 업로드</p>
+    <input type="file" id="imageUpload" multiple accept="image/*" />
+  </div>  <div id="preview" class="preview-area"></div>  <div class="button-section">
+    <div class="line"></div>
+    <button onclick="processImages()">변환하기</button>
+  </div>  <div class="version-text">v.1.7.6</div>  <script>
+    const imageUpload = document.getElementById("imageUpload");
+    const preview = document.getElementById("preview");
 
-  // 이미지 업로드 시 처리
-  imageInput.addEventListener('change', (event) => {
-    const file = event.target.files[0];
-    if (!file) return;
+    imageUpload.addEventListener("change", () => {
+      preview.innerHTML = "";
+      const files = Array.from(imageUpload.files);
+      files.forEach((file, index) => {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          const item = document.createElement("div");
+          item.className = "preview-item";
 
-    // 같은 파일을 다시 업로드할 수 있도록 input 초기화
-    event.target.value = '';
+          const img = document.createElement("img");
+          img.src = e.target.result;
 
-    const reader = new FileReader();
-    reader.onload = function(e) {
-      thumbnail.src = e.target.result;
-      previewSection.classList.remove('hidden');
+          const inputBox = document.createElement("div");
+          inputBox.className = "input-box";
+          inputBox.innerHTML = `
+            <span>기존 숫자</span>
+            <input type="text" placeholder="예: 3" />
+            <span class="arrow">→</span>
+            <span>변경 숫자</span>
+            <input type="text" placeholder="예: 5" />
+            <span class="cancel" onclick="this.parentElement.parentElement.remove()">X</span>
+          `;
 
-      // 예시: 숫자 추출 후 기입 (실제 추출로직 필요)
-      originalNumberInput.value = Math.floor(Math.random() * 100); // 임시값
-    };
-    reader.readAsDataURL(file);
-  });
+          item.appendChild(img);
+          item.appendChild(inputBox);
 
-  // 취소 버튼 클릭 시 미리보기 제거
-  resetButton.addEventListener('click', () => {
-    previewSection.classList.add('hidden');
-    thumbnail.src = '';
-    originalNumberInput.value = '';
-    document.getElementById('new-number').value = '';
-  });
-</script><!-- v.1.7.9 -->
+          preview.appendChild(item);
+        };
+        reader.readAsDataURL(file);
+      });
+    });
+
+    function processImages() {
+      alert("변환 기능은 아직 구현되지 않았습니다.");
+    }
+  </script></body>
+</html><!-- v.1.7.6 -->
