@@ -1,4 +1,6 @@
-<!-- <!-- ht.v.1.7.9 --><!DOCTYPE html><html lang="ko">
+<!-- ht.v.1.7.9 -->
+<!DOCTYPE html>
+<html lang="ko">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -9,94 +11,95 @@
       text-align: center;
       margin: 0;
       padding: 0;
-    }h1 {
-  margin-top: 20px;
-}
+    }
 
-hr {
-  margin: 30px 0;
-  border: none;
-  border-top: 1px solid #ccc;
-}
+    h1 {
+      margin-top: 20px;
+    }
 
-.section {
-  text-align: left;
-  margin: 0 auto;
-  width: 90%;
-  max-width: 900px;
-}
+    hr {
+      margin: 30px 0;
+      border: none;
+      border-top: 1px solid #ccc;
+    }
 
-.upload-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 10px;
-}
+    .section {
+      text-align: left;
+      margin: 0 auto;
+      width: 90%;
+      max-width: 900px;
+    }
 
-.drop-box {
-  border: 2px dashed #aaa;
-  padding: 20px;
-  text-align: center;
-  flex: 1;
-  color: gray;
-  border-radius: 10px;
-}
+    .upload-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
 
-.upload-info {
-  font-size: 12px;
-  color: #999;
-  margin-left: 10px;
-}
+    .drop-box {
+      border: 2px dashed #aaa;
+      padding: 20px;
+      text-align: center;
+      flex: 1;
+      color: gray;
+      border-radius: 10px;
+    }
 
-.preview-section {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-top: 20px;
-}
+    .upload-info {
+      font-size: 12px;
+      color: #999;
+      margin-left: 10px;
+    }
 
-.preview-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
+    .preview-section {
+      display: flex;
+      flex-direction: column-reverse; /* 최신 이미지가 위로 오도록 */
+      gap: 10px;
+      margin-top: 20px;
+    }
 
-.preview-row img {
-  width: 80px;
-  height: 60px;
-  object-fit: cover;
-  border-radius: 6px;
-}
+    .preview-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
 
-.preview-row input {
-  width: 60px;
-  padding: 5px;
-}
+    .preview-row img {
+      width: 80px;
+      height: 60px;
+      object-fit: cover;
+      border-radius: 6px;
+    }
 
-.preview-row .remove {
-  margin-left: auto;
-  cursor: pointer;
-  color: black;
-  font-weight: bold;
-}
+    .preview-row input {
+      width: 60px;
+      padding: 5px;
+    }
 
-.convert-btn {
-  margin-top: 40px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 30px;
-  padding: 20px 40px;
-  font-size: 20px;
-  cursor: pointer;
-}
+    .preview-row .remove {
+      margin-left: auto;
+      cursor: pointer;
+      color: black;
+      font-weight: bold;
+    }
 
-.version {
-  font-size: 12px;
-  color: #aaa;
-  margin-top: 40px;
-}
+    .convert-btn {
+      margin-top: 40px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 30px;
+      padding: 20px 40px;
+      font-size: 20px;
+      cursor: pointer;
+    }
 
+    .version {
+      font-size: 12px;
+      color: #aaa;
+      margin-top: 40px;
+    }
   </style>
 </head>
 <body>
@@ -110,155 +113,31 @@ hr {
       <div class="drop-box" id="dropBox">업로드할 이미지를 여기로 드래그앤 드롭</div>
     </div>
     <div style="font-size: 12px; color: #999;">이미지는 최대 10개까지 업로드 가능합니다.</div>
-    <div id="previewContainer" class="preview-section"></div><hr />
-<h2><b>mobile용 이미지 업로드</b></h2>
-<div class="upload-row">
-  <label><b>이미지 업로드</b></label>
-  <input type="file" id="imageInputMobile" accept="image/*" multiple />
-  <div class="drop-box" id="dropBoxMobile">업로드할 이미지를 여기로 드래그앤 드롭</div>
-</div>
-<div style="font-size: 12px; color: #999;">이미지는 최대 10개까지 업로드 가능합니다.</div>
-<div id="previewContainerMobile" class="preview-section"></div>
+    <div id="previewContainer" class="preview-section"></div>
 
-<hr />
-<div style="height: 2em;"></div>
-<div style="text-align: center;">
-  <button class="convert-btn">변환하기</button>
-  <div class="version">v.1.7.9</div>
-</div>
-<div style="height: 5em;"></div>
+    <hr />
+    <h2><b>mobile용 이미지 업로드</b></h2>
+    <div class="upload-row">
+      <label><b>이미지 업로드</b></label>
+      <input type="file" id="imageInputMobile" accept="image/*" multiple />
+      <div class="drop-box" id="dropBoxMobile">업로드할 이미지를 여기로 드래그앤 드롭</div>
+    </div>
+    <div style="font-size: 12px; color: #999;">이미지는 최대 10개까지 업로드 가능합니다.</div>
+    <div id="previewContainerMobile" class="preview-section"></div>
 
-  </div>  <!-- Tesseract.js 로딩 -->  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.0.0/dist/tesseract.min.js"></script>  <!-- 메인 기능 스크립트 -->  <script src="main.js"></script></body>
+    <hr />
+    <div style="height: 2em;"></div>
+    <div style="text-align: center;">
+      <button class="convert-btn">변환하기</button>
+      <div class="version">v.1.7.9</div>
+    </div>
+    <div style="height: 5em;"></div>
+  </div>
+
+  <!-- Tesseract.js 로딩 -->
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.0.0/dist/tesseract.min.js"></script>
+  <!-- 메인 기능 스크립트 -->
+  <script src="main.js"></script>
+</body>
 </html>
 <!-- ht.v.1.7.9 -->
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>시그 이미지 숫자 변경기</title>
-  <style>
-    body {
-      font-family: sans-serif;
-      text-align: center;
-      margin: 0;
-      padding: 0;
-    }h1 {
-  margin-top: 20px;
-}
-
-hr {
-  margin: 30px 0;
-  border: none;
-  border-top: 1px solid #ccc;
-}
-
-.section {
-  text-align: left;
-  margin: 0 auto;
-  width: 90%;
-  max-width: 900px;
-}
-
-.upload-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 10px;
-}
-
-.drop-box {
-  border: 2px dashed #aaa;
-  padding: 20px;
-  text-align: center;
-  flex: 1;
-  color: gray;
-  border-radius: 10px;
-}
-
-.upload-info {
-  font-size: 12px;
-  color: #999;
-  margin-left: 10px;
-}
-
-.preview-section {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-top: 20px;
-}
-
-.preview-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.preview-row img {
-  width: 80px;
-  height: 80px;
-  object-fit: cover;
-  border-radius: 6px;
-}
-
-.preview-row input {
-  width: 60px;
-  padding: 5px;
-}
-
-.preview-row .remove {
-  margin-left: auto;
-  cursor: pointer;
-  color: black;
-  font-weight: bold;
-}
-
-.convert-btn {
-  margin-top: 40px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 30px;
-  padding: 20px 40px;
-  font-size: 20px;
-  cursor: pointer;
-}
-
-.version {
-  font-size: 12px;
-  color: #aaa;
-  margin-top: 40px;
-}
-
-  </style>
-</head>
-<body>
-  <h1>시그 이미지 숫자 변경기</h1>
-  <div class="section">
-    <hr />
-    <h2><b>pc용 이미지 업로드</b></h2>
-    <div class="upload-row">
-      <label><b>이미지 업로드</b></label>
-      <input type="file" id="imageInput" accept="image/*" multiple />
-      <div class="drop-box" id="dropBox">업로드할 이미지를 여기로 드래그앤 드롭</div>
-    </div>
-    <div style="font-size: 12px; color: #999;">이미지는 최대 10개까지 업로드 가능합니다.</div>
-    <div id="previewContainer" class="preview-section"></div><hr />
-<h2><b>mobile용 이미지 업로드</b></h2>
-<div class="upload-row">
-  <label><b>이미지 업로드</b></label>
-  <input type="file" id="imageInputMobile" accept="image/*" multiple />
-  <div class="drop-box" id="dropBoxMobile">업로드할 이미지를 여기로 드래그앤 드롭</div>
-</div>
-<div style="font-size: 12px; color: #999;">이미지는 최대 10개까지 업로드 가능합니다.</div>
-<div id="previewContainerMobile" class="preview-section"></div>
-
-<hr />
-<div style="height: 2em;"></div>
-<div style="text-align: center;">
-  <button class="convert-btn">변환하기</button>
-  <div class="version">v.1.7.8 | 250411</div>
-</div>
-<div style="height: 5em;"></div>
-
-  </div>  <!-- Tesseract.js 로딩 -->  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.0.0/dist/tesseract.min.js"></script>  <!-- 메인 기능 스크립트 -->  <script src="main.js"></script></body>
-</html>
-<!-- v.1.7.8 -->
