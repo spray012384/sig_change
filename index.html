@@ -1,4 +1,4 @@
-<!-- v.1.7.5 --><!DOCTYPE html><html lang="ko">
+<!-- v.1.7.6 --><!DOCTYPE html><html lang="ko">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -25,9 +25,6 @@
       align-items: center;
       gap: 10px;
       margin-bottom: 8px;
-    }
-    .upload-header span {
-      font-weight: bold;
     }
     .drop-zone {
       flex: 1;
@@ -58,19 +55,12 @@
       gap: 10px;
     }
     .preview-img {
-      width: 100px;
-      height: 100px;
+      width: 60px;
+      height: 60px;
       object-fit: cover;
     }
     .input-number {
       width: 60px;
-    }
-    .label {
-      font-size: 14px;
-      font-weight: bold;
-    }
-    .arrow {
-      font-size: 20px;
     }
     .remove-btn {
       cursor: pointer;
@@ -98,107 +88,38 @@
       color: #999;
       margin-top: 40px;
     }
+    .bold-label {
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
-  <h1>시그 이미지 숫자 변환</h1>  <div class="section">
-    <h2><strong>PC용 이미지 업로드</strong></h2>
+  <h1>시그 이미지 숫자 변환</h1>
+  <div class="section">
+    <h2 class="bold-label">PC용 이미지 업로드</h2>
     <div class="upload-header">
-      <span><strong>PC용 이미지</strong></span>
-      <input type="file" multiple />
+      <span class="bold-label">PC용 이미지</span>
+      <input type="file" multiple onchange="this.value=null" />
       <div class="drop-zone">원하시는 이미지를 여기에 드래그하세요.</div>
     </div>
     <div class="note">※ 최대 10개의 이미지를 업로드할 수 있습니다.</div>
-    <div class="preview-area" id="preview-pc">
+    <div class="preview-area">
       <!-- PC 이미지 미리보기 항목 삽입 영역 -->
     </div>
   </div>  <div class="section">
-    <h2><strong>Mobile용 이미지 업로드</strong></h2>
+    <h2 class="bold-label">Mobile용 이미지 업로드</h2>
     <div class="upload-header">
-      <span><strong>Mobile용 이미지</strong></span>
-      <input type="file" multiple />
+      <span class="bold-label">Mobile용 이미지</span>
+      <input type="file" multiple onchange="this.value=null" />
       <div class="drop-zone">원하시는 이미지를 여기에 드래그하세요.</div>
     </div>
     <div class="note">※ 최대 10개의 이미지를 업로드할 수 있습니다.</div>
-    <div class="preview-area" id="preview-mobile">
+    <div class="preview-area">
       <!-- Mobile 이미지 미리보기 항목 삽입 영역 -->
     </div>
   </div>  <hr />
   <button class="convert-btn">변환하기</button>
-  <div class="version">v.1.7.5</div>  <script>
-    function createPreviewItem(imageSrc, existingValue = '', newValue = '') {
-      const item = document.createElement('div');
-      item.className = 'preview-item';
-
-      const img = document.createElement('img');
-      img.src = imageSrc;
-      img.className = 'preview-img';
-
-      const label1 = document.createElement('span');
-      label1.className = 'label';
-      label1.textContent = '기존 숫자';
-
-      const input1 = document.createElement('input');
-      input1.type = 'number';
-      input1.className = 'input-number';
-      input1.value = existingValue;
-
-      const arrow = document.createElement('span');
-      arrow.className = 'arrow';
-      arrow.textContent = '→';
-
-      const label2 = document.createElement('span');
-      label2.className = 'label';
-      label2.textContent = '변경 숫자';
-
-      const input2 = document.createElement('input');
-      input2.type = 'number';
-      input2.className = 'input-number';
-      input2.value = newValue;
-
-      const remove = document.createElement('span');
-      remove.className = 'remove-btn';
-      remove.textContent = '×';
-      remove.onclick = () => item.remove();
-
-      item.appendChild(img);
-      item.appendChild(label1);
-      item.appendChild(input1);
-      item.appendChild(arrow);
-      item.appendChild(label2);
-      item.appendChild(input2);
-      item.appendChild(remove);
-
-      return item;
-    }
-
-    const pcInput = document.querySelectorAll('input[type="file"]')[0];
-    const pcPreview = document.getElementById('preview-pc');
-    pcInput.addEventListener('change', (e) => {
-      pcPreview.innerHTML = '';
-      Array.from(e.target.files).forEach(file => {
-        const reader = new FileReader();
-        reader.onload = (event) => {
-          const preview = createPreviewItem(event.target.result);
-          pcPreview.appendChild(preview);
-        };
-        reader.readAsDataURL(file);
-      });
-    });
-
-    const mobileInput = document.querySelectorAll('input[type="file"]')[1];
-    const mobilePreview = document.getElementById('preview-mobile');
-    mobileInput.addEventListener('change', (e) => {
-      mobilePreview.innerHTML = '';
-      Array.from(e.target.files).forEach(file => {
-        const reader = new FileReader();
-        reader.onload = (event) => {
-          const preview = createPreviewItem(event.target.result);
-          mobilePreview.appendChild(preview);
-        };
-        reader.readAsDataURL(file);
-      });
-    });
-  </script></body>
+  <div class="version">v.1.7.6</div>
+</body>
 </html>
-<!-- v.1.7.5 -->
+<!-- v.1.7.6 -->
