@@ -1,76 +1,46 @@
-
+<!-- 버전: v.1.1.0 -->
 <!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>시그 숫자 자동 변환</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 20px;
-      background-color: #f8f8f8;
-    }
-    h1 {
-      text-align: center;
-      color: #333;
-    }
-    .container {
-      max-width: 600px;
-      margin: 0 auto;
-      padding: 20px;
-      background: white;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-    .form-group {
-      margin-bottom: 15px;
-    }
-    label {
-      display: block;
-      margin-bottom: 5px;
-      font-weight: bold;
-    }
-    input[type="file"],
-    input[type="text"] {
-      width: 100%;
-      padding: 8px;
-      box-sizing: border-box;
-    }
-    button {
-      padding: 10px 20px;
-      background-color: #007bff;
-      border: none;
-      color: white;
-      font-size: 16px;
-      cursor: pointer;
-      border-radius: 4px;
-    }
-    button:hover {
-      background-color: #0056b3;
-    }
-  </style>
+  <title>시그 숫자 자동 변환 - 이미지 업로드</title>
 </head>
-<body>
-  <div class="container">
-    <h1>시그 숫자 자동 변환</h1>
-    <div class="form-group">
-      <label for="pcImage">PC용 이미지 업로드</label>
-      <input type="file" id="pcImage" accept="image/*" />
-    </div>
-    <div class="form-group">
-      <label for="mobileImage">모바일용 이미지 업로드</label>
-      <input type="file" id="mobileImage" accept="image/*" />
-    </div>
-    <div class="form-group">
-      <label for="originalNumber">기존 숫자</label>
-      <input type="text" id="originalNumber" placeholder="예: 405" />
-    </div>
-    <div class="form-group">
-      <label for="newNumber">변경할 숫자</label>
-      <input type="text" id="newNumber" placeholder="예: 1250" />
-    </div>
-    <button onclick="alert('기능은 아직 구현되지 않았어요!')">변환하기</button>
-  </div>
+<body style="font-family: sans-serif; text-align: center; padding: 2rem;">
+
+  <h2>시그 숫자 자동 변환 (1단계)</h2>
+
+  <p>최대 <strong>10세트</strong> (PC + 모바일 = 총 20장) 이미지 업로드</p>
+  <input type="file" id="imageInput" multiple accept="image/png, image/jpeg" />
+  <br /><br />
+
+  <label>기존 숫자: <input type="text" id="originalNumber" placeholder="예: 405" /></label>
+  <br /><br />
+  <label>변경 숫자: <input type="text" id="newNumber" placeholder="예: 1250" /></label>
+  <br /><br />
+
+  <button onclick="handleUpload()">변환하기</button>
+
+  <div id="fileList" style="margin-top: 2rem;"></div>
+
+  <script>
+    function handleUpload() {
+      const input = document.getElementById('imageInput');
+      const files = input.files;
+      const list = document.getElementById('fileList');
+
+      if (files.length === 0) {
+        alert("이미지를 업로드해주세요.");
+        return;
+      }
+
+      list.innerHTML = "<h3>업로드된 이미지:</h3><ul>" +
+        Array.from(files).map(f => `<li>${f.name}</li>`).join("") + "</ul>";
+      
+      alert("변환 로직은 다음 단계에서 구현됩니다!");
+    }
+  </script>
+
+  <p style="margin-top: 2rem; font-size: 0.8rem; color: gray;">버전: v.1.1.0</p>
 </body>
 </html>
+<!-- 버전: v.1.1.0 -->
