@@ -1,39 +1,64 @@
-<!-- v.1.7.9 -->
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>시그 이미지 숫자 변경기</title>
-  <link rel="stylesheet" href="style.css"/>
-</head>
-<body>
-  <main>
-    <h1>시그 이미지 숫자 변경기</h1>
+const imageInput = document.getElementById('imageInput');
+const previewContainer = document.getElementById('previewContainer');
 
-    <section class="upload-section">
-      <div class="upload-container">
-        <h2>PC 업로드</h2>
-        <input type="file" id="imageInput" multiple accept="image/*">
-        <div id="dropBox" class="drop-box">이미지를 여기에 드래그 앤 드롭하거나 클릭해서 업로드하세요.</div>
-        <div id="previewContainer" class="preview-container"></div>
-      </div>
+// 이미지 파일 고유 hash 생성을 위한 Map
+const uploadedMap = new Map();
 
-      <div class="upload-container mobile">
-        <h2>모바일 업로드</h2>
-        <input type="file" id="imageInputMobile" multiple accept="image/*">
-        <div id="dropBoxMobile" class="drop-box">이미지를 터치해서 업로드하세요.</div>
-        <div id="previewContainerMobile" class="preview-container"></div>
-        <p class="mobile-guide">※ 모바일은 다중 선택이 안될 수 있습니다. 하나씩 업로드해 주세요.</p>
-      </div>
-    </section>
+imageInput.addEventListener('change', async (event) => {
+  const files = Array.from(event.target.files);
+  for (const file of files) {
+    const fileKey = await getFileHash(file);
 
-    <button class="convert-btn">변환하기</button>
-  </main>
+    // 이미 동일 파일이 업로드 되었는지 체크
+    if (!uploadedMap.has(fileKey)) {
+      uploadedMap.set(fileKey, file.name);
 
-  <div class="version">v.1.7.9 | 250411</div>
+      const url = URL.createObjectURL(file);
+      const ocrResult = await simulateOCR(file); // 실제 OCR 함수로 대체 가능
 
-  <script src="main.js"></script>
-</body>
-</html>
-<!-- v.1.7.9 -->
+      const wrapper = document.createElement('div');
+      wrapper.className = 'image-preview';
+
+      const img = document.createElement('img');
+      img.src = url;
+
+      const span = document.createElement('span');
+      span.className = 'ocr-result';
+      span.textContent = ocrResult || '인식불가';
+
+      const btn = document.createElement('button');
+      btn.className = 'remove-btn';
+      btn.textContent = '삭제';
+      btn.addEventListener('click', () => {
+        previewContainer.removeChild(wrapper);
+        uploadedMap.delete(fileKey);
+      });
+
+      wrapper.appendChild(img);
+      wrapper.appendChild(span);
+      wrapper.appendChild(btn);
+
+      previewContainer.prepend(wrapper);
+    }
+  }
+
+  // 동일 파일 재업로드 가능하게 input 초기화
+  event.target.value = '';
+});
+
+// 이미지 해시 생성
+async function getFileHash(file) {
+  const arrayBuffer = await file.arrayBuffer();
+  const hashBuffer = await crypto.subtle.digest('SHA-256', arrayBuffer);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+// OCR 시뮬레이션 함수
+async function simulateOCR(file) {
+  return new Promise((resolve) => {
+    // 파일명에 숫자가 있다면 그걸 추출해서 리턴
+    const match = file.name.match(/\d+/);
+    resolve(match ? match[0] : '');
+  });
+}
