@@ -1,99 +1,70 @@
-// js.v.1.7.9
-document.addEventListener("DOMContentLoaded", () => {
-  const imageInput = document.getElementById("imageInput");
-  const imageInputMobile = document.getElementById("imageInputMobile");
-  const dropBox = document.getElementById("dropBox");
-  const dropBoxMobile = document.getElementById("dropBoxMobile");
-  const previewContainer = document.getElementById("previewContainer");
-  const previewContainerMobile = document.getElementById("previewContainerMobile");
+// js v.1.7.9
 
-  const maxImages = 10;
+const imageInput = document.getElementById("imageInput"); const previewContainer = document.getElementById("previewContainer");
 
-  const createPreviewRow = (file, container) => {
-    const reader = new FileReader();
-    reader.onload = () => {
-      const row = document.createElement("div");
-      row.className = "preview-row";
+imageInput.addEventListener("change", handleImageUpload);
 
-      const img = document.createElement("img");
-      img.src = reader.result;
+function handleImageUpload(event) { const files = Array.from(event.target.files); previewContainer.innerHTML = "";
 
-      const originalText = document.createElement("span");
-      originalText.textContent = "기존 숫자";
+// 최신 업로드 파일이 위에 오도록 순서를 반대로 files.reverse().forEach((file, index) => { const reader = new FileReader(); reader.onload = function (e) { const previewRow = document.createElement("div"); previewRow.className = "preview-row"; previewRow.style.display = "flex"; previewRow.style.alignItems = "center"; previewRow.style.marginBottom = "8px";
 
-      const originalInput = document.createElement("input");
-      originalInput.type = "text";
-      originalInput.placeholder = "자동 인식";
+const thumbnail = document.createElement("img");
+  thumbnail.src = e.target.result;
+  thumbnail.style.width = "80px";
+  thumbnail.style.height = "60px";
+  thumbnail.style.objectFit = "cover";
+  thumbnail.style.marginRight = "8px";
 
-      const newText = document.createElement("span");
-      newText.textContent = "변경할 숫자";
+  const text1 = document.createElement("span");
+  text1.textContent = "기존 숫자";
+  text1.style.marginRight = "4px";
 
-      const newInput = document.createElement("input");
-      newInput.type = "text";
-      newInput.placeholder = "변경할 숫자";
+  const input1 = document.createElement("input");
+  input1.type = "text";
+  input1.placeholder = "자동 인식 숫자";
+  input1.style.marginRight = "12px";
 
-      const removeBtn = document.createElement("span");
-      removeBtn.className = "remove";
-      removeBtn.textContent = "X";
-      removeBtn.onclick = () => container.removeChild(row);
+  const text2 = document.createElement("span");
+  text2.textContent = "변경할 숫자";
+  text2.style.marginRight = "4px";
 
-      row.appendChild(img);
-      row.appendChild(originalText);
-      row.appendChild(originalInput);
-      row.appendChild(newText);
-      row.appendChild(newInput);
-      row.appendChild(removeBtn);
+  const input2 = document.createElement("input");
+  input2.type = "text";
+  input2.placeholder = "직접 입력";
+  input2.style.marginRight = "12px";
 
-      container.prepend(row); // 최신 업로드가 위로
-    };
-    reader.readAsDataURL(file);
-  };
+  const deleteBtn = document.createElement("button");
+  deleteBtn.innerHTML = "&#10006;"; // X 아이콘 (유니코드)
+  deleteBtn.style.color = "black";
+  deleteBtn.style.marginLeft = "auto";
+  deleteBtn.style.cursor = "pointer";
+  deleteBtn.addEventListener("click", () => {
+    previewRow.remove();
+  });
 
-  const handleFiles = (files, container) => {
-    const currentCount = container.children.length;
-    if (currentCount + files.length > maxImages) {
-      alert("최대 10개의 이미지만 업로드 가능합니다.");
-      return;
+  previewRow.appendChild(thumbnail);
+  previewRow.appendChild(text1);
+  previewRow.appendChild(input1);
+  previewRow.appendChild(text2);
+  previewRow.appendChild(input2);
+  previewRow.appendChild(deleteBtn);
+
+  previewContainer.appendChild(previewRow);
+
+  // 가짜 숫자 인식 시뮬레이션 (실제로는 OCR 사용)
+  simulateNumberRecognition(file).then((result) => {
+    if (result) {
+      input1.value = result;
+    } else {
+      input1.value = "인식불가";
     }
-    Array.from(files).forEach(file => createPreviewRow(file, container));
-  };
-
-  imageInput.addEventListener("change", (e) => {
-    handleFiles(e.target.files, previewContainer);
   });
+};
+reader.readAsDataURL(file);
 
-  imageInputMobile.addEventListener("change", (e) => {
-    handleFiles(e.target.files, previewContainerMobile);
-  });
+}); }
 
-  dropBox.addEventListener("dragover", (e) => {
-    e.preventDefault();
-    dropBox.style.borderColor = "#000";
-  });
+function simulateNumberRecognition(file) { return new Promise((resolve) => { // 임의로 50% 확률로 인식 실패 시뮬레이션 setTimeout(() => { const fail = Math.random() < 0.5; if (fail) resolve(null); else resolve(Math.floor(Math.random() * 100).toString()); }, 300); }); }
 
-  dropBox.addEventListener("dragleave", () => {
-    dropBox.style.borderColor = "#aaa";
-  });
+// js v.1.7.9
 
-  dropBox.addEventListener("drop", (e) => {
-    e.preventDefault();
-    dropBox.style.borderColor = "#aaa";
-    handleFiles(e.dataTransfer.files, previewContainer);
-  });
-
-  dropBoxMobile.addEventListener("dragover", (e) => {
-    e.preventDefault();
-    dropBoxMobile.style.borderColor = "#000";
-  });
-
-  dropBoxMobile.addEventListener("dragleave", () => {
-    dropBoxMobile.style.borderColor = "#aaa";
-  });
-
-  dropBoxMobile.addEventListener("drop", (e) => {
-    e.preventDefault();
-    dropBoxMobile.style.borderColor = "#aaa";
-    handleFiles(e.dataTransfer.files, previewContainerMobile);
-  });
-});
-// js.v.1.7.9
