@@ -1,64 +1,142 @@
-<!-- ht v.1.7.9 --><!DOCTYPE html><html lang="ko"><head>
+<!-- ht v.1.7.9 -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>이미지 숫자 추출 미리보기</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>시그 이미지 숫자 변경기</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      padding: 20px;
-      background-color: #f4f4f4;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+      font-family: sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 0;
     }
-    #preview {
-      width: 100%;
-      max-width: 600px;
+
+    h1 {
       margin-top: 20px;
     }
-    .preview-item {
+
+    hr {
+      margin: 30px 0;
+      border: none;
+      border-top: 1px solid #ccc;
+    }
+
+    .section {
+      text-align: left;
+      margin: 0 auto;
+      width: 90%;
+      max-width: 900px;
+    }
+
+    .upload-row {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      background-color: #fff;
-      padding: 10px;
+      gap: 10px;
       margin-bottom: 10px;
-      border-radius: 8px;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     }
-    .thumbnail {
-      width: 80px;
-      height: 60px;
-      object-fit: cover;
-      margin-right: 10px;
+
+    .drop-box {
+      border: 2px dashed #aaa;
+      padding: 20px;
+      text-align: center;
+      flex: 1;
+      color: gray;
+      border-radius: 10px;
     }
-    .info {
-      flex-grow: 1;
+
+    .upload-info {
+      font-size: 12px;
+      color: #999;
+      margin-left: 10px;
+    }
+
+    .preview-section {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .preview-row {
       display: flex;
       align-items: center;
       gap: 10px;
     }
-    .info label {
-      font-weight: bold;
-    }
-    .info input[type="text"] {
-      padding: 5px;
-      border-radius: 4px;
-      border: 1px solid #ccc;
+
+    .preview-row img {
       width: 80px;
+      height: 60px;
+      object-fit: cover;
+      border-radius: 6px;
     }
-    .remove-btn {
-      background: none;
-      border: none;
-      font-size: 18px;
+
+    .preview-row input {
+      width: 60px;
+      padding: 5px;
+    }
+
+    .preview-row .remove {
+      margin-left: auto;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 20px;
       color: black;
+    }
+
+    .convert-btn {
+      margin-top: 40px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 30px;
+      padding: 20px 40px;
+      font-size: 20px;
       cursor: pointer;
     }
+
+    .version {
+      font-size: 12px;
+      color: #aaa;
+      margin-top: 40px;
+    }
   </style>
-</head><body>
-  <h1>이미지 숫자 추출 미리보기</h1>
-  <input type="file" id="fileInput" multiple accept="image/*" />
-  <div id="preview"></div>
+</head>
+<body>
+  <h1>시그 이미지 숫자 변경기</h1>
+  <div class="section">
+    <hr />
+    <h2><b>PC용 이미지 업로드</b></h2>
+    <div class="upload-row">
+      <label><b>이미지 업로드</b></label>
+      <input type="file" id="imageInput" accept="image/*" multiple />
+      <div class="drop-box" id="dropBox">업로드할 이미지를 여기로 드래그앤드롭</div>
+    </div>
+    <div style="font-size: 12px; color: #999;">이미지는 최대 10개까지 업로드 가능합니다.</div>
+    <div id="previewContainer" class="preview-section"></div>
+
+    <hr />
+    <h2><b>모바일용 이미지 업로드</b></h2>
+    <div class="upload-row">
+      <label><b>이미지 업로드</b></label>
+      <input type="file" id="imageInputMobile" accept="image/*" multiple />
+      <div class="drop-box" id="dropBoxMobile">업로드할 이미지를 여기로 드래그앤드롭</div>
+    </div>
+    <div style="font-size: 12px; color: #999;">이미지는 최대 10개까지 업로드 가능합니다.</div>
+    <div id="previewContainerMobile" class="preview-section"></div>
+
+    <hr />
+    <div style="height: 2em;"></div>
+    <div style="text-align: center;">
+      <button class="convert-btn">변환하기</button>
+      <div class="version">v.1.7.9</div>
+    </div>
+    <div style="height: 5em;"></div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.0.0/dist/tesseract.min.js"></script>
   <script src="main.js"></script>
-  <!-- ht v.1.7.9 -->
-</body></html>.
+</body>
+</html>
+<!-- ht v.1.7.9 -->
